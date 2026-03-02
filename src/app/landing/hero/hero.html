@@ -1,0 +1,167 @@
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+
+  <div class="hero-content fade-up">
+    <h1 class="hero-title">
+      Healthcare Disease Trend & Risk Analysis
+    </h1>
+
+    <p class="hero-subtitle">
+      AI-powered platform to analyze disease trends,
+      predict high-risk patients, and support healthcare decisions.
+    </p>
+
+    <div class="hero-actions">
+      <button routerLink="/dashboard" class="primary-btn">
+        📊 View Dashboard
+      </button>
+
+      <button routerLink="/risk" class="secondary-btn">
+        🧠 Predict Risk
+      </button>
+
+      <button class="learn-btn" (click)="scrollToFeatures()">
+        🔍 Learn More
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats">
+  <div class="stats-grid">
+
+    <div class="stat-card fade-up">
+      <div class="stat-number">{{ totalRecords }}</div>
+      <div class="stat-label">Records Analyzed</div>
+    </div>
+
+    <div class="stat-card fade-up">
+      <div class="stat-number">{{ highRisk }}</div>
+      <div class="stat-label">High Risk Cases</div>
+    </div>
+
+    <div class="stat-card fade-up">
+      <div class="stat-number">{{ regions }}</div>
+      <div class="stat-label">Regions Covered</div>
+    </div>
+
+    <div class="stat-card fade-up">
+      <div class="stat-number">{{ accuracy }}%</div>
+      <div class="stat-label">Prediction Accuracy</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="features" id="features">
+  <h2 class="section-title fade-up">Platform Features</h2>
+
+  <div class="feature-grid">
+
+    <div class="feature-card fade-up">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Disease Trend Analysis</div>
+      <div class="feature-desc">
+        Visualize disease spread patterns across regions using
+        real-time analytics and intelligent dashboards.
+      </div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-icon">🧠</div>
+      <div class="feature-title">AI Risk Prediction</div>
+      <div class="feature-desc">
+        Machine learning models identify high-risk patients
+        for early intervention and better outcomes.
+      </div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-icon">📍</div>
+      <div class="feature-title">Region-wise Insights</div>
+      <div class="feature-desc">
+        Compare healthcare data geographically to support
+        smarter public health planning.
+      </div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-icon">🏥</div>
+      <div class="feature-title">Resource Planning</div>
+      <div class="feature-desc">
+        Optimize hospital resources and staffing using
+        predictive analytics.
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ===== WHY HEALTHAI ===== -->
+<section class="why">
+  <h2 class="section-title fade-up">Why HealthAI?</h2>
+
+  <div class="why-grid">
+
+    <div class="why-card fade-up">
+      ⚡ Real-time analytics engine
+    </div>
+
+    <div class="why-card fade-up">
+      🔒 Secure healthcare data pipeline
+    </div>
+
+    <div class="why-card fade-up">
+      🤖 AI-driven decision support
+    </div>
+
+    <div class="why-card fade-up">
+      🌍 Scalable for national health systems
+    </div>
+
+  </div>
+</section>
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <h2 class="section-title fade-up">About HealthAI</h2>
+
+  <p class="fade-up">
+    HealthAI is an intelligent healthcare analytics platform that
+    leverages machine learning to predict disease risks, analyze
+    trends, and support data-driven healthcare decisions.
+  </p>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-brand">
+      <h3>HealthAI</h3>
+      <p>
+        Intelligent healthcare analytics platform built for
+        modern medical decision-making.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <h4>Platform</h4>
+      <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/risk">Risk Prediction</a>
+      <a href="#features">Features</a>
+    </div>
+
+    <div class="footer-links">
+      <h4>Contact</h4>
+      <span>Pune, India</span>
+      <span>healthai.support@email.com</span>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 HealthAI • Built by Sadik Shaikh
+  </div>
+</footer>

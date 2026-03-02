@@ -1,0 +1,52 @@
+.risk-container {
+  padding: 30px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.form-card,
+.result-card {
+  background: white;
+  padding: 24px;
+  margin: 20px auto;
+  max-width: 420px;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+}
+
+.form-card label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.form-card input,
+.form-card select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.form-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.high {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.low {
+  color: #16a34a;
+  font-weight: 700;
+}

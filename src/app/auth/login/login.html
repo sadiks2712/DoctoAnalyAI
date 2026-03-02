@@ -1,0 +1,46 @@
+<div class="medical-bg">
+  <canvas id="ecgCanvas"></canvas>
+  <div class="grid-overlay"></div>
+</div>
+
+<div class="login-container glass premium-enter">
+  <div class="logo-wrap">
+    <div class="pulse-dot"></div>
+    <h2>Healthcare Analytics</h2>
+    <p class="subtitle">AI-Powered Medical Intelligence</p>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- EMAIL -->
+  <div class="input-group">
+    <input type="email" placeholder="Email address" [(ngModel)]="email" />
+  </div>
+
+  <!-- PASSWORD -->
+  <div class="input-group">
+    <input type="password" placeholder="Password" [(ngModel)]="password" />
+  </div>
+
+  <!-- LOGIN -->
+  <button class="primary-btn" (click)="login()" [disabled]="loading">
+    <span *ngIf="!loading">Secure Login</span>
+    <span *ngIf="loading" class="spinner"></span>
+  </button>
+
+  <!-- REGISTER -->
+  <button class="secondary-btn" (click)="register()" [disabled]="loading">
+    Create Account
+  </button>
+
+  <div class="divider">OR CONTINUE WITH</div>
+
+  <!-- GOOGLE -->
+  <button class="google-btn" (click)="googleLogin()" [disabled]="loading">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" />
+    Google
+  </button>
+</div>

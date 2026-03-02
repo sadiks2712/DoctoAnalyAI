@@ -1,0 +1,190 @@
+/* ===============================
+   🌌 WRAPPER
+================================ */
+.upload-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(14,165,233,0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.12), transparent 40%),
+    linear-gradient(135deg, #020617, #0f172a);
+  padding: 20px;
+}
+
+/* ===============================
+   💎 CARD
+================================ */
+.upload-card {
+  width: 420px;
+  max-width: 95%;
+  padding: 36px;
+  border-radius: 20px;
+  text-align: center;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.12);
+
+  box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+}
+
+/* hover lift */
+.upload-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 35px 90px rgba(0,0,0,0.6);
+}
+
+/* ===============================
+   📁 ICON
+================================ */
+.upload-icon {
+  font-size: 42px;
+  margin-bottom: 10px;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.upload-card h2 {
+  color: #e0f2fe;
+  margin-bottom: 8px;
+}
+
+.upload-sub {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ===============================
+   📂 FILE INPUT
+================================ */
+.file-label {
+  display: block;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.file-label input {
+  display: none;
+}
+
+.file-label span {
+  display: block;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,0.3);
+  color: #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  transition: all 0.25s ease;
+}
+
+.file-label:hover span {
+  border-color: #38bdf8;
+  background: rgba(56,189,248,0.08);
+}
+
+/* ===============================
+   🚀 BUTTON
+================================ */
+.upload-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(14,165,233,0.45);
+}
+
+/* ===============================
+   💬 MESSAGE
+================================ */
+.message {
+  margin-top: 16px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+/* ===============================
+   🎬 FADE UP
+================================ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  animation: fadeUp 0.7s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}/* ===============================
+   ✅ SUCCESS ANIMATION
+================================ */
+.success-box {
+  margin-top: 20px;
+  text-align: center;
+  animation: successPop 0.5s ease;
+}
+
+@keyframes successPop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* animated check */
+.checkmark {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  position: relative;
+  box-shadow: 0 0 0 6px rgba(34,197,94,0.15);
+  animation: checkPulse 1s ease;
+}
+
+@keyframes checkPulse {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* tick mark */
+.checkmark::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 30px;
+  width: 16px;
+  height: 8px;
+  border-left: 3px solid white;
+  border-bottom: 3px solid white;
+  transform: rotate(-45deg);
+}
+
+.success-box p {
+  color: #22c55e;
+  font-weight: 600;
+}

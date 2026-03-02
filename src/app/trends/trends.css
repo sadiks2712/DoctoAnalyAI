@@ -1,0 +1,128 @@
+/* ===============================
+   🌌 WRAPPER
+================================ */
+.trends-wrapper {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(14,165,233,0.08), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.08), transparent 40%),
+    linear-gradient(135deg, #020617, #0f172a);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ===============================
+   💎 CARD
+================================ */
+.trends-card {
+  width: 100%;
+  max-width: 900px;
+  padding: 32px;
+  border-radius: 20px;
+  text-align: center;
+
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.12);
+
+  box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+
+  animation: floatCard 6s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+/* hover lift */
+.trends-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.65);
+}
+
+/* ===============================
+   🌊 FLOAT ANIMATION
+================================ */
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ===============================
+   🧠 TITLE
+================================ */
+.trend-title {
+  color: #e0f2fe;
+  margin-bottom: 24px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* ===============================
+   📊 CHART WRAP
+================================ */
+.chart-wrap {
+  animation: chartFade 0.6s ease;
+}
+
+@keyframes chartFade {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===============================
+   ⏳ LOADING
+================================ */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #cbd5e1;
+}
+
+/* spinner */
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top: 3px solid #38bdf8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===============================
+   🎬 FADE UP (if not global)
+================================ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  animation: fadeUp 0.7s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}.chart-wrap {
+  position: relative;
+  height: 380px;
+  width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  font-weight: 500;
+}

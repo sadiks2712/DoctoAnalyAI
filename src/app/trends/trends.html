@@ -1,0 +1,30 @@
+<div class="trends-wrapper">
+  <div class="trends-card fade-up">
+
+    <h2 class="trend-title">
+      📈 Multi-Disease Trend Analysis
+    </h2>
+
+    <!-- 🔄 Loading -->
+    <div *ngIf="loading" class="loading">
+      <div class="loader"></div>
+      <span>Loading real-time data...</span>
+    </div>
+
+    <!-- 📊 Chart -->
+    <div class="chart-wrap" *ngIf="!loading && trendChartData.datasets.length">
+      <canvas
+        baseChart
+        [data]="trendChartData"
+        [type]="trendChartType"
+        [options]="trendChartOptions">
+      </canvas>
+    </div>
+
+    <!-- 📭 Empty state -->
+    <div class="empty-state" *ngIf="!loading && !trendChartData.datasets.length">
+      📭 No trend data available
+    </div>
+
+  </div>
+</div>

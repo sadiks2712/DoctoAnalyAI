@@ -1,0 +1,399 @@
+/* ===============================
+   🌐 Dashboard Container
+================================ */
+.dashboard-container {
+  padding: 32px;
+  background: linear-gradient(135deg, #f0f9ff, #f8fafc);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* smooth page entry */
+.dashboard-container {
+  animation: pageFade 0.6s ease;
+}
+
+@keyframes pageFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===============================
+   🔝 Header
+================================ */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  color: #0f172a;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: 0.3px;
+}
+
+/* ❤️ heartbeat line */
+.heartbeat {
+  width: 42px;
+  height: 3px;
+  background: #ef4444;
+  position: relative;
+  display: inline-block;
+  border-radius: 4px;
+  animation: pulseLine 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseLine {
+  0% { transform: scaleX(1); opacity: 0.7; }
+  50% { transform: scaleX(1.8); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0.7; }
+}
+
+/* ===============================
+   🔴 Live Alert
+================================ */
+.live-alert {
+  background: #ef4444;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  width: fit-content;
+  margin: 10px auto 24px;
+  font-weight: 600;
+  animation: blinkAlert 1.2s infinite;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.35);
+}
+
+@keyframes blinkAlert {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ===============================
+   ⏳ Loading
+================================ */
+.loading-box {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e2e8f0;
+  border-top: 5px solid #2563eb;
+  border-radius: 50%;
+  margin: auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===============================
+   📊 KPI Grid
+================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+/* ===============================
+   📦 KPI Card
+================================ */
+.card {
+  background: white;
+  padding: 26px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s ease;
+  animation: cardEntry 0.5s ease;
+}
+
+@keyframes cardEntry {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* subtle medical shine */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(37,99,235,0.10),
+    transparent
+  );
+  opacity: 0;
+  transition: 0.35s;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 24px 55px rgba(0,0,0,0.16);
+}
+
+.card .icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  color: #475569;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* 🫀 LIVE COUNTER STYLE */
+.counter {
+  font-size: 32px;
+  font-weight: 900;
+  color: #2563eb;
+  letter-spacing: 1px;
+  animation: counterGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes counterGlow {
+  from { text-shadow: 0 0 0 rgba(37,99,235,0); }
+  to { text-shadow: 0 0 14px rgba(37,99,235,0.35); }
+}
+
+/* ===============================
+   📈 Chart Grid
+================================ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* ===============================
+   📊 Chart Card
+================================ */
+.chart-card {
+  background: white;
+  padding: 26px;
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  animation: chartEntry 0.6s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes chartEntry {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chart-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 60px rgba(0,0,0,0.18);
+}
+
+.chart-card h3 {
+  text-align: center;
+  margin-bottom: 18px;
+  color: #334155;
+  font-weight: 700;
+}
+
+/* ===============================
+   📊 Chart Skeleton Loader
+================================ */
+.chart-skeleton {
+  height: 260px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 25%,
+    #f1f5f9 37%,
+    #e2e8f0 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* ===== Skeleton Cards ===== */
+.skeleton-container {
+  display: flex;
+  gap: 20px;
+}
+
+.skeleton-card {
+  height: 120px;
+  flex: 1;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 25%,
+    #e2e8f0 50%,
+    #f1f5f9 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===============================
+   ⚠️ Warning
+================================ */
+.warning {
+  background: #fff7ed;
+  color: #c2410c;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-weight: 600;
+  border-left: 4px solid #f97316;
+}
+
+/* ===============================
+   🚫 No Data
+================================ */
+.no-data {
+  text-align: center;
+  padding: 44px;
+  color: #64748b;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* ===============================
+   📄 Export Button
+================================ */
+.export-btn {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
+}
+
+/* ===============================
+   🧠 Column Chips
+================================ */
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 24px;
+}
+
+.chip {
+  background: #eef2ff;
+  color: #3730a3;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.chip:hover {
+  background: #e0e7ff;
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   📱 Responsive
+================================ */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  .counter {
+    font-size: 26px;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ===============================
+   🧊 Glassmorphism Upgrade
+================================ */
+.chart-card,
+.card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* subtle floating effect */
+.chart-card:hover,
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+}.section-title {
+  margin: 18px 0 8px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+/* better spacing */
+.dashboard-container > * {
+  margin-bottom: 18px;
+}
+
+/* charts responsive */
+.chart-card canvas {
+  max-height: 280px;
+}/* ===============================
+   📊 Chart entrance animation
+================================ */
+.chart-card canvas {
+  animation: chartFadeIn 0.8s ease;
+}
+
+@keyframes chartFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===============================
+   🎯 Active drill highlight
+================================ */
+.chart-card.active {
+  outline: 2px solid #3b82f6;
+  box-shadow: 0 0 25px rgba(59,130,246,0.25);
+}

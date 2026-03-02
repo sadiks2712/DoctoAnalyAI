@@ -1,0 +1,31 @@
+.rec-container {
+  padding: 40px;
+}
+
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.rec-card {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: 0.25s;
+}
+
+.rec-card:hover {
+  transform: translateY(-6px);
+}
+
+.rec-card h3 {
+  margin-bottom: 10px;
+  color: #2563eb;
+}
+
+.rec-card p {
+  color: #64748b;
+}

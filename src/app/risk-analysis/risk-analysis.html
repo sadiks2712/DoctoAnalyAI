@@ -1,0 +1,41 @@
+<div class="risk-container">
+  <h2>AI Health Risk Predictor</h2>
+
+  <div class="form-card">
+
+    <label>Age</label>
+    <input type="number" [(ngModel)]="formData.age">
+
+    <label>Gender</label>
+    <select [(ngModel)]="formData.gender">
+      <option [value]="1">Male</option>
+      <option [value]="0">Female</option>
+    </select>
+
+    <label>Region Code</label>
+    <input type="number" [(ngModel)]="formData.region">
+
+    <button (click)="predict()">Predict Risk</button>
+
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Predicting...
+  </div>
+
+  <div *ngIf="result" class="result-card">
+    <h3>Prediction Result</h3>
+
+    <p>
+      Risk Level:
+      <span [class.high]="result.high_risk"
+            [class.low]="!result.high_risk">
+        {{ result.high_risk ? 'HIGH RISK ⚠️' : 'LOW RISK ✅' }}
+      </span>
+    </p>
+
+    <p>
+      Probability: {{ result.risk_probability * 100 | number:'1.0-1' }}%
+    </p>
+  </div>
+</div>
