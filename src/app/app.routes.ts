@@ -10,17 +10,18 @@ import { authGuard } from './guards/auth-guard';
 import { UploadComponent } from './upload/upload';
 
 export const routes: Routes = [
-  // 🔓 Login (no navbar)
-  { path: '', component: LoginComponent},
 
-  // 🔐 App shell (WITH navbar)
+  // 🌐 Public pages
+  { path: '', component: LandingComponent },
+  { path: 'login', component: LoginComponent },
+
+  // 🔐 Protected app shell
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'landing', component: LandingComponent },
-       { path: 'upload', component: UploadComponent },
+      { path: 'upload', component: UploadComponent },
       { path: 'dashboard', component: Dashboard },
       { path: 'risk', component: RiskAnalysis },
       { path: 'trends', component: Trends },
@@ -28,5 +29,6 @@ export const routes: Routes = [
     ]
   },
 
+  // fallback
   { path: '**', redirectTo: '' }
 ];
