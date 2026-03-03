@@ -1,47 +1,58 @@
 <nav class="navbar">
   <div class="logo">🏥 DoctoAnalyAI</div>
 
-  <!-- 🍔 Mobile toggle -->
+  <!-- Mobile toggle -->
   <div class="menu-toggle" (click)="toggleMenu()">
     ☰
   </div>
 
   <ul class="nav-links" [class.open]="menuOpen">
-    
+
     <li>
-      <a routerLink="/" 
+      <a routerLink="/"
          routerLinkActive="active"
-         [routerLinkActiveOptions]="{ exact: true }">
+         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="menuOpen=false">
         Home
       </a>
     </li>
 
     <li>
-      <a routerLink="/trends" routerLinkActive="active">
+      <a routerLink="/trends"
+         routerLinkActive="active"
+         (click)="menuOpen=false">
         Trends
       </a>
     </li>
 
     <li>
-      <a routerLink="/risk" routerLinkActive="active">
+      <a routerLink="/risk"
+         routerLinkActive="active"
+         (click)="menuOpen=false">
         Risk
       </a>
     </li>
 
     <li>
-      <a routerLink="/recommendations" routerLinkActive="active">
+      <a routerLink="/recommendations"
+         routerLinkActive="active"
+         (click)="menuOpen=false">
         Recommendations
       </a>
     </li>
 
     <li>
-      <a routerLink="/upload" routerLinkActive="active">
+      <a routerLink="/upload"
+         routerLinkActive="active"
+         (click)="menuOpen=false">
         Upload
       </a>
     </li>
 
     <li>
-      <a routerLink="/dashboard" routerLinkActive="active">
+      <a routerLink="/dashboard"
+         routerLinkActive="active"
+         (click)="menuOpen=false">
         Dashboard
       </a>
     </li>
