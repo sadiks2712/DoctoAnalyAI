@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from model import predict_risk, load_model
 from analysis import get_summary
 from quality import analyze_data_quality
@@ -16,25 +15,24 @@ import os
 app = FastAPI(title="Healthcare Analytics API")
 
 # =====================================================
-# ✅ CORS CONFIG (LOCAL + DEPLOYED FRONTEND SAFE)
+# ✅ FINAL CORS CONFIG (LOCAL + NETLIFY SAFE)
 # =====================================================
-origins = [
-    "http://localhost:4200",              # Angular local
-    "https://doctoanalyai.onrender.com",  # Backend self (optional)
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origin_regex=r"https://.*\.netlify\.app",  # Allow all Netlify deploys
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Optional: Handle preflight explicitly (extra safe)
-@app.options("/{full_path:path}")
-async def preflight_handler(full_path: str):
-    return JSONResponse(content={"message": "OK"})
+# Also allow localhost manually
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # =====================================================
 # 📁 SAFE CSV READER

@@ -6,8 +6,12 @@
     ☰
   </div>
 
-  <ul class="nav-links" [class.open]="menuOpen">
-     <li routerLink="/" routerLinkActive="active">  Home</li>
+  <ul class="/landing" [class.open]="menuOpen">
+    <a routerLink="/"
+   routerLinkActive="active"
+   [routerLinkActiveOptions]="{ exact: true }">
+  Home
+</a>
      <li routerLink="/trends" routerLinkActive="active">Trends</li>
      <li routerLink="/risk" routerLinkActive="active">Risk</li>
       <li routerLink="/recommendations" routerLinkActive="active">
