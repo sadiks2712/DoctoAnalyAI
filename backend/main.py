@@ -18,6 +18,7 @@ app = FastAPI(title="Healthcare Analytics API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://localhost:4200",
         "https://doctoanalayai.netlify.app",
     ],
     allow_credentials=True,
