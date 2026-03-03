@@ -12,33 +12,29 @@ import os
 
 app = FastAPI(title="Healthcare Analytics API")
 
-# =============================
-# ✅ CORS
-# =============================
+# =====================================================
+# ✅ CORS (FINAL STABLE VERSION FOR NETLIFY + RENDER)
+# =====================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:4200",
-        "http://127.0.0.1:4200",
-        "https://doctoanalyai.netlify.app",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],          # Allow all origins
+    allow_credentials=False,      # Must be False when using "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# =============================
-# 📁 Safe CSV reader
-# =============================
+# =====================================================
+# 📁 Safe CSV Reader
+# =====================================================
 def read_csv_safe(path: str):
     try:
         return pd.read_csv(path, encoding="utf-8")
     except Exception:
         return pd.read_csv(path, encoding="latin1")
 
-# =============================
-# 📁 Dataset selector
-# =============================
+# =====================================================
+# 📁 Dataset Selector
+# =====================================================
 def get_dataset_path():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(BASE_DIR, "data")
@@ -51,16 +47,16 @@ def get_dataset_path():
 
     return default
 
-# =============================
+# =====================================================
 # ✅ Home
-# =============================
+# =====================================================
 @app.get("/")
 def home():
     return {"message": "Healthcare API running"}
 
-# =============================
+# =====================================================
 # ✅ Summary
-# =============================
+# =====================================================
 @app.get("/summary")
 def summary(
     age: int | None = None,
@@ -70,9 +66,9 @@ def summary(
 ):
     return get_summary(age, gender, region, disease)
 
-# =============================
+# =====================================================
 # ✅ Risk Prediction
-# =============================
+# =====================================================
 @app.post("/predict")
 def predict(
     age: int = Form(...),
@@ -81,9 +77,9 @@ def predict(
 ):
     return predict_risk(age, gender, region)
 
-# =============================
+# =====================================================
 # 🚀 Forecast API
-# =============================
+# =====================================================
 @app.get("/forecast")
 def forecast_cases():
     try:
@@ -119,9 +115,9 @@ def forecast_cases():
         print("❌ Forecast error:", e)
         return {"historical": [], "forecast": []}
 
-# =============================
-# 📈 MULTI-DISEASE TRENDS API (ENTERPRISE)
-# =============================
+# =====================================================
+# 📈 Multi-Disease Trends API
+# =====================================================
 @app.get("/trends")
 def get_trends(disease: str | None = None):
     try:
@@ -131,73 +127,33 @@ def get_trends(disease: str | None = None):
         if df.empty:
             return []
 
-        # ==============================
-        # 🧠 NORMALIZE COLUMNS
-        # ==============================
         normalized_cols = {c.lower().strip(): c for c in df.columns}
 
-        print("📊 CSV columns:", df.columns.tolist())
-
-        # ==============================
-        # 🧠 SMART DISEASE DETECTION
-        # ==============================
         disease_col = None
-        possible_disease_names = [
-            "disease",
-            "disease_name",
-            "disease name",
-            "condition",
-            "illness",
-            "diagnosis",
-        ]
-
-        for key in possible_disease_names:
+        for key in ["disease", "disease_name", "disease name", "condition", "illness", "diagnosis"]:
             if key in normalized_cols:
                 disease_col = normalized_cols[key]
                 break
 
-        print("🦠 Detected disease column:", disease_col)
-
         if disease_col is None:
-            print("⚠️ Disease column not found")
             return []
 
-        # ==============================
-        # 🧠 SMART DATE DETECTION
-        # ==============================
         date_col = None
-        possible_date_names = [
-            "date",
-            "month",
-            "time",
-            "year",
-            "report_date",
-        ]
-
-        for key in possible_date_names:
+        for key in ["date", "month", "time", "year", "report_date"]:
             if key in normalized_cols:
                 date_col = normalized_cols[key]
                 break
 
-        # fallback time index
         if date_col is None:
             df["time_index"] = df.index
             date_col = "time_index"
 
-        print("📅 Detected date column:", date_col)
-
-        # ==============================
-        # 🔍 OPTIONAL FILTER
-        # ==============================
         if disease:
             df = df[df[disease_col] == disease]
 
         if df.empty:
             return []
 
-        # ==============================
-        # 📊 GROUP DATA
-        # ==============================
         trend = (
             df.groupby([date_col, disease_col])
             .size()
@@ -217,11 +173,9 @@ def get_trends(disease: str | None = None):
         print("❌ Trends error:", e)
         return []
 
-# =============================
+# =====================================================
 # 🚀 Upload Dataset
-# =============================
-# 🚀 Upload Dataset (ENTERPRISE SAFE)
-# =============================
+# =====================================================
 @app.post("/upload-data")
 async def upload_data(file: UploadFile = File(...)):
     try:
@@ -229,44 +183,28 @@ async def upload_data(file: UploadFile = File(...)):
         data_dir = os.path.join(BASE_DIR, "data")
         os.makedirs(data_dir, exist_ok=True)
 
-        # ✅ validate filename
         if not file.filename.lower().endswith(".csv"):
             return {"error": "Only CSV files are allowed"}
 
         file_path = os.path.join(data_dir, "healthcare.csv")
-
         contents = await file.read()
 
-        # ❗ empty file check
         if not contents:
             return {"error": "Uploaded file is empty"}
 
-        # ✅ save file
         with open(file_path, "wb") as f:
             f.write(contents)
 
-        # ✅ safe read
-        try:
-            df = read_csv_safe(file_path)
-        except Exception as e:
-            return {"error": f"CSV parsing failed: {str(e)}"}
+        df = read_csv_safe(file_path)
 
-        # ❗ row check
         if df.empty:
             return {"error": "CSV has no rows"}
 
-        # ❗ column count check (enterprise guard)
         if len(df.columns) < 2:
             return {"error": "CSV must contain multiple columns"}
 
-        # =============================
-        # ⭐ DATA QUALITY
-        # =============================
         quality_report = analyze_data_quality(df)
 
-        # =============================
-        # ⭐ MODEL RELOAD (safe)
-        # =============================
         try:
             load_model()
             model_status = "reloaded"
@@ -274,9 +212,6 @@ async def upload_data(file: UploadFile = File(...)):
             print("⚠️ Model reload failed:", e)
             model_status = "fallback_dummy"
 
-        # =============================
-        # ✅ SUCCESS RESPONSE
-        # =============================
         return {
             "message": "File uploaded successfully",
             "rows": int(len(df)),
