@@ -12,7 +12,8 @@ import { UploadComponent } from './upload/upload';
 export const routes: Routes = [
 
   // 🔑 First page → Login
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+ 
+  { path: '', component: LandingComponent },
   { path: 'login', component: LoginComponent },
 
   // 🌐 Landing page (after login)
