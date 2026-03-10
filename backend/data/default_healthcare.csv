@@ -1,0 +1,11 @@
+age,gender,region,disease,month
+34,1,0,Flu,Jan
+52,0,1,COVID,Jan
+28,1,2,Flu,Feb
+67,1,3,COVID,Mar
+45,0,4,Asthma,Apr
+73,1,2,Heart,May
+60,1,3,Diabetes,Jun
+41,0,0,Flu,Jul
+55,1,1,COVID,Aug
+66,1,2,Heart,Sep
