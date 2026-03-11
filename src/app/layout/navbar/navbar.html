@@ -8,13 +8,14 @@
 
   <ul class="nav-links" [class.open]="menuOpen">
      <li routerLink="/" routerLinkActive="active">  Home</li>
-     <li routerLink="/trends" routerLinkActive="active">Trends</li>
-     <li routerLink="/risk" routerLinkActive="active">Risk</li>
+     <li routerLink="/upload" routerLinkActive="active">Upload</li>
+    <li routerLink="/dashboard" routerLinkActive="active">Dashboard</li>
+      <li routerLink="/risk" routerLinkActive="active">Risk</li>
       <li routerLink="/recommendations" routerLinkActive="active">
       Recommendations
     </li>
-    <li routerLink="/upload" routerLinkActive="active">Upload</li>
-    <li routerLink="/dashboard" routerLinkActive="active">Dashboard</li>
+     <li routerLink="/trends" routerLinkActive="active">Trends</li>
+   
   </ul>
 
   <button class="logout-btn" (click)="logout()">Logout</button>
