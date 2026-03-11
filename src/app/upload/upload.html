@@ -9,41 +9,51 @@
       Upload your CSV file to analyze disease trends.
     </p>
 
+    <!-- File Upload -->
     <label class="file-label">
       <input
         type="file"
         (change)="onFileSelected($event)"
         accept=".csv"
-        />
-        <span>Choose CSV File</span>
-      </label>
+      />
+      <span>Choose CSV File</span>
+    </label>
 
-      <button
-        class="upload-btn"
-        (click)="upload()"
-        [disabled]="loading"
-        >
-        @if (!loading) {
-          <span>🚀 Upload & Analyze</span>
-        }
-        @if (loading) {
-          <span>Uploading...</span>
-        }
-      </button>
+    <!-- ✅ Show Selected File Name -->
+    @if (selectedFile) {
+      <p class="selected-file">
+        📄 {{ selectedFile.name }}
+      </p>
+    }
 
-      <!-- ✅ SUCCESS ANIMATION -->
-      @if (showSuccess) {
-        <div class="success-box">
-          <div class="checkmark"></div>
-          <p>Upload Successful!</p>
-        </div>
+    <!-- Upload Button -->
+    <button
+      class="upload-btn"
+      (click)="upload()"
+      [disabled]="loading || !selectedFile"
+    >
+      @if (!loading) {
+        <span>🚀 Upload & Analyze</span>
       }
-
-      @if (message && !showSuccess) {
-        <p class="message">
-          {{ message }}
-        </p>
+      @if (loading) {
+        <span>Uploading...</span>
       }
+    </button>
 
-    </div>
+    <!-- ✅ SUCCESS ANIMATION -->
+    @if (showSuccess) {
+      <div class="success-box">
+        <div class="checkmark"></div>
+        <p>Upload Successful!</p>
+      </div>
+    }
+
+    <!-- Message -->
+    @if (message && !showSuccess) {
+      <p class="message">
+        {{ message }}
+      </p>
+    }
+
   </div>
+</div>

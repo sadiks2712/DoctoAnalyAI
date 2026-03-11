@@ -22,19 +22,31 @@ Chart.register(...registerables);
 export class Dashboard implements OnInit, OnDestroy {
 
   // =========================
-  // 🎯 KPI VALUES
+  // REGION MAP
+  // =========================
+  regions = [
+    { name: 'North India', value: 0 },
+    { name: 'South India', value: 1 },
+    { name: 'West India', value: 2 },
+    { name: 'East India', value: 3 },
+    { name: 'Central India', value: 4 }
+  ];
+
+  // =========================
+  // KPI VALUES
   // =========================
   animatedTotal = 0;
   animatedAvgAge = 0;
+  animatedHighRisk = 0;
 
   // =========================
-  // 🔍 DRILL STATE
+  // DRILL STATE
   // =========================
   selectedDisease: string | null = null;
   selectedRegion: string | null = null;
 
   // =========================
-  // 🔁 REFRESH HANDLERS
+  // REFRESH HANDLERS
   // =========================
   private refreshInterval: any;
   private dataListener!: () => void;
@@ -45,7 +57,7 @@ export class Dashboard implements OnInit, OnDestroy {
   warningMessage = '';
 
   // =========================
-  // 📊 CHART DATA (STRICT TYPES)
+  // CHART DATA
   // =========================
   diseaseChartData?: ChartConfiguration<'pie'>['data'];
   diseaseChartType: 'pie' = 'pie';
@@ -54,7 +66,7 @@ export class Dashboard implements OnInit, OnDestroy {
   regionChartType: 'bar' = 'bar';
 
   // =========================
-  // ⚙️ CHART OPTIONS
+  // CHART OPTIONS
   // =========================
   diseaseChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -108,72 +120,97 @@ export class Dashboard implements OnInit, OnDestroy {
   constructor(private api: ApiService) {}
 
   // =========================
-  // 🚀 INIT
+  // INIT
   // =========================
   ngOnInit() {
+
     this.loadSummary();
 
-    // 🔁 auto refresh
+    // auto refresh every 30 sec
     this.refreshInterval = setInterval(() => {
       this.loadSummary();
     }, 30000);
 
-    // 📡 refresh after upload
+    // refresh after dataset upload
     this.dataListener = () => this.loadSummary();
     window.addEventListener('dataUpdated', this.dataListener);
+
   }
 
   // =========================
-  // 🧹 DESTROY
+  // DESTROY
   // =========================
   ngOnDestroy() {
+
     window.removeEventListener('dataUpdated', this.dataListener);
-    if (this.refreshInterval) clearInterval(this.refreshInterval);
+
+    if (this.refreshInterval)
+      clearInterval(this.refreshInterval);
+
   }
 
   // =========================
-  // 📊 LOAD SUMMARY
+  // LOAD SUMMARY
   // =========================
   loadSummary() {
+
     this.loading = true;
     this.noData = false;
     this.warningMessage = '';
 
     this.api.getSummary().subscribe({
+
       next: (data) => {
+
         this.summary = data || {};
 
-        // 🎯 animate KPIs
+        // animate KPIs
         this.animateValue(
           this.animatedTotal,
           Number(this.summary?.total_records || 0),
           800,
-          v => (this.animatedTotal = v)
+          v => this.animatedTotal = v
         );
 
         this.animateValue(
           this.animatedAvgAge,
           Math.round(Number(this.summary?.avg_age || 0)),
           800,
-          v => (this.animatedAvgAge = v)
+          v => this.animatedAvgAge = v
+        );
+
+        this.animateValue(
+          this.animatedHighRisk,
+          Number(this.summary?.high_risk || 0),
+          800,
+          v => this.animatedHighRisk = v
         );
 
         this.prepareCharts(this.summary);
+
         this.loading = false;
+
       },
+
       error: (err) => {
+
         console.error('API error:', err);
+
         this.warningMessage = 'Failed to load dashboard data.';
         this.loading = false;
         this.noData = true;
+
       }
+
     });
+
   }
 
   // =========================
-  // 🎯 DRILL — DISEASE
+  // DISEASE DRILL
   // =========================
   onDiseaseClick(disease: string) {
+
     if (!disease) return;
 
     this.selectedDisease = disease;
@@ -181,34 +218,46 @@ export class Dashboard implements OnInit, OnDestroy {
 
     this.api.getSummary(undefined, undefined, undefined, disease)
       .subscribe(res => this.prepareCharts(res));
+
   }
 
   // =========================
-  // 🎯 DRILL — REGION
+  // REGION DRILL
   // =========================
   onRegionClick(region: string) {
+
     if (!region) return;
 
     this.selectedRegion = region;
     this.selectedDisease = null;
 
-    this.api.getSummary(undefined, undefined, region)
-      .subscribe(res => this.prepareCharts(res));
+    // convert region name → region number
+    const regionValue = this.regions.find(r => r.name === region)?.value;
+
+    if (regionValue !== undefined) {
+      this.api.getSummary(undefined, undefined, regionValue)
+        .subscribe(res => this.prepareCharts(res));
+    }
+
   }
 
   // =========================
-  // 🔄 RESET FILTERS
+  // RESET FILTERS
   // =========================
   resetFilters() {
+
     this.selectedDisease = null;
     this.selectedRegion = null;
+
     this.loadSummary();
+
   }
 
   // =========================
-  // 📈 PREPARE CHARTS
+  // PREPARE CHARTS
   // =========================
   prepareCharts(data: any) {
+
     if (!data) return;
 
     const diseaseCounts = data?.disease_counts || {};
@@ -217,10 +266,14 @@ export class Dashboard implements OnInit, OnDestroy {
     const diseaseLabels = Object.keys(diseaseCounts);
     const diseaseValues = Object.values(diseaseCounts).map(Number);
 
-    const regionLabels = Object.keys(regionCounts);
+    // Map region numbers to names for labels
+    const regionLabels = Object.keys(regionCounts).map(key => {
+      const num = Number(key);
+      return this.regions.find(r => r.value === num)?.name || key;
+    });
     const regionValues = Object.values(regionCounts).map(Number);
 
-    // 🥧 Disease chart
+    // disease pie chart
     this.diseaseChartData = diseaseLabels.length
       ? {
           labels: diseaseLabels,
@@ -238,7 +291,7 @@ export class Dashboard implements OnInit, OnDestroy {
         }
       : undefined;
 
-    // 📊 Region chart
+    // region bar chart
     this.regionChartData = regionLabels.length
       ? {
           labels: regionLabels,
@@ -250,36 +303,45 @@ export class Dashboard implements OnInit, OnDestroy {
         }
       : undefined;
 
-    // 🚨 no data detection
     if (!diseaseLabels.length && !regionLabels.length) {
+
       this.noData = true;
+
       this.warningMessage =
         'Dataset uploaded but no categorical columns found for charts.';
     }
+
   }
 
   // =========================
-  // 📄 DOWNLOAD PDF
+  // DOWNLOAD PDF
   // =========================
   async downloadPDF() {
+
     const element = document.getElementById('dashboard-report');
+
     if (!element) return;
-const canvas = await html2canvas(element, {
-  scale: 2,
-  useCORS: true
-} as any);
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true
+    } as any);
+
     const imgData = canvas.toDataURL('image/png');
 
     const pdf = new jsPDF('p', 'mm', 'a4');
+
     const imgWidth = 210;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
     pdf.addImage(imgData, 'PNG', 0, 10, imgWidth, imgHeight);
+
     pdf.save('healthcare-report.pdf');
+
   }
 
   // =========================
-  // 🎯 KPI ANIMATION
+  // KPI ANIMATION
   // =========================
   animateValue(
     start: number,
@@ -287,15 +349,24 @@ const canvas = await html2canvas(element, {
     duration: number,
     setter: (val: number) => void
   ) {
+
     const startTime = performance.now();
 
     const update = (currentTime: number) => {
+
       const progress = Math.min((currentTime - startTime) / duration, 1);
+
       const value = Math.floor(progress * (end - start) + start);
+
       setter(value);
-      if (progress < 1) requestAnimationFrame(update);
+
+      if (progress < 1)
+        requestAnimationFrame(update);
+
     };
 
     requestAnimationFrame(update);
+
   }
+
 }

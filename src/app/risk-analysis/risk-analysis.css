@@ -1,52 +1,189 @@
-.risk-container {
-  padding: 30px;
-  background: #f5f7fb;
-  min-height: 100vh;
+body{
+background:linear-gradient(135deg,#020617,#0f172a,#020617);
+background-size:400% 400%;
+animation:gradientMove 15s ease infinite;
+color:#e2e8f0;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.network-bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+}
+
+#networkCanvas{
+width:100%;
+height:100%;
+}
+
+.particles span{
+position:absolute;
+width:6px;
+height:6px;
+background:#38bdf8;
+border-radius:50%;
+opacity:.4;
+animation:floatParticle 12s linear infinite;
+}
+
+@keyframes floatParticle{
+0%{transform:translateY(100vh);}
+100%{transform:translateY(-10vh);}
+}
+
+.risk-container{
+padding:40px;
+text-align:center;
+}
+
+.title{
+font-size:34px;
+font-weight:700;
+background:linear-gradient(90deg,#3b82f6,#06b6d4);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:30px;
 }
 
 .form-card,
-.result-card {
-  background: white;
-  padding: 24px;
-  margin: 20px auto;
-  max-width: 420px;
-  border-radius: 14px;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+.result-card,
+.patient-card{
+background:#1e293b;
+padding:25px;
+border-radius:16px;
+max-width:420px;
+margin:20px auto;
+box-shadow:0 10px 40px rgba(0,0,0,.6);
 }
 
-.form-card label {
-  display: block;
-  margin-top: 12px;
-  font-weight: 600;
+label,
+p,
+li,
+h3,
+h4{
+color:#e2e8f0;
 }
 
 .form-card input,
-.form-card select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
+.form-card select{
+width:100%;
+padding:10px;
+margin-top:8px;
+margin-bottom:12px;
+border-radius:8px;
+background:#0f172a;
+border:1px solid #334155;
+color:#e2e8f0;
 }
 
-.form-card button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 12px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
+.predict-btn{
+width:100%;
+padding:13px;
+border:none;
+border-radius:10px;
+background:linear-gradient(135deg,#3b82f6,#06b6d4);
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
 }
 
-.high {
-  color: #dc2626;
-  font-weight: 700;
+.predict-btn:hover{
+transform:scale(1.05);
+box-shadow:0 10px 30px rgba(59,130,246,.6);
 }
 
-.low {
-  color: #16a34a;
-  font-weight: 700;
+.spinner{
+width:16px;
+height:16px;
+border:2px solid white;
+border-top:2px solid transparent;
+border-radius:50%;
+display:inline-block;
+animation:spin 1s linear infinite;
+margin-right:6px;
+}
+
+@keyframes spin{
+to{transform:rotate(360deg);}
+}
+
+.high{color:#ef4444;font-weight:700;}
+.low{color:#22c55e;font-weight:700;}
+
+.progress-bar{
+width:100%;
+height:10px;
+background:#334155;
+border-radius:6px;
+margin-top:10px;
+overflow:hidden;
+}
+
+.progress-fill{
+height:100%;
+background:linear-gradient(90deg,#22c55e,#ef4444);
+transition:width .8s ease;
+}
+
+.risk-meter{
+display:flex;
+justify-content:center;
+margin-top:20px;
+}
+
+.meter-circle{
+width:150px;
+height:150px;
+border-radius:50%;
+background:conic-gradient(
+#ef4444 calc(var(--risk)*1%),
+#334155 0
+);
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 0 30px rgba(239,68,68,.7);
+}
+
+.meter-value{
+font-size:28px;
+font-weight:700;
+color:#f8fafc;
+}
+
+.dna-loader{
+text-align:center;
+margin-top:30px;
+}
+
+.dna{
+width:120px;
+height:120px;
+margin:auto;
+animation:dnaRotate 4s linear infinite;
+}
+
+@keyframes dnaRotate{
+0%{transform:rotateY(0deg);}
+100%{transform:rotateY(360deg);}
+}
+
+.ai-explanation{
+background:#0f172a;
+border-radius:10px;
+padding:15px;
+margin-top:20px;
+border:1px solid #334155;
+text-align:left;
 }

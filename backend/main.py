@@ -98,10 +98,15 @@ def forecast_cases():
     if df.empty:
         return {"historical": [], "forecast": []}
 
-    df = df.reset_index(drop=True)
-    df["time"] = df.index
+    # Assume 'date' column exists for grouping; adjust if needed
+    if 'date' not in df.columns:
+        return {"error": "Dataset must have a 'date' column for forecasting"}
 
-    trend = df.groupby("time").size().reset_index(name="cases")
+    df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    df = df.dropna(subset=['date'])
+
+    trend = df.groupby(df['date'].dt.date).size().reset_index(name="cases")
+    trend['time'] = range(len(trend))
 
     X = trend[["time"]]
     y = trend["cases"]
@@ -151,3 +156,30 @@ async def upload_data(file: UploadFile = File(...)):
         "columns": list(df.columns),
         "quality": quality_report
     }
+
+
+# =============================
+# TRENDS (added for api.ts compatibility)
+# =============================
+@app.get("/trends")
+def get_trends(disease: str | None = None):
+    file_path = get_dataset_path()
+    df = read_csv_safe(file_path)
+
+    if df.empty:
+        return []
+
+    # Assume 'date' and 'disease' columns exist
+    if 'date' not in df.columns or 'disease' not in df.columns:
+        return {"error": "Dataset must have 'date' and 'disease' columns"}
+
+    df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    df = df.dropna(subset=['date'])
+
+    if disease:
+        df = df[df['disease'].str.contains(disease, case=False, na=False)]
+
+    trend = df.groupby([df['date'].dt.date, 'disease']).size().reset_index(name="cases")
+    trend = trend.rename(columns={'date': 'date'})
+
+    return trend.to_dict(orient="records")

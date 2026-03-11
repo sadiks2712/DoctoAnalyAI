@@ -188,3 +188,9 @@
   color: #22c55e;
   font-weight: 600;
 }
+.selected-file{
+  margin-top:10px;
+  font-size:14px;
+  color:#2ecc71;
+  font-weight:500;
+}

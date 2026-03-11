@@ -1,43 +1,159 @@
+<div class="network-bg">
+  <canvas id="networkCanvas"></canvas>
+</div>
+
+<div class="particles">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
 <div class="risk-container">
-  <h2>AI Health Risk Predictor</h2>
+
+  <h2 class="title">🧠 AI Health Risk Predictor</h2>
 
   <div class="form-card">
 
     <label>Age</label>
-    <input type="number" [(ngModel)]="formData.age">
+    <input type="number" [(ngModel)]="formData.age" min="1" max="120">
 
     <label>Gender</label>
     <select [(ngModel)]="formData.gender">
-      <option [value]="1">Male</option>
-      <option [value]="0">Female</option>
+      <option [ngValue]="1">Male</option>
+      <option [ngValue]="0">Female</option>
     </select>
 
-    <label>Region Code</label>
-    <input type="number" [(ngModel)]="formData.region">
+ <label>Region</label>
+<select [(ngModel)]="formData.region">
 
-    <button (click)="predict()">Predict Risk</button>
+  @for (region of regions; track region.value) {
+
+    <option [ngValue]="region.value">
+      {{ region.name }}
+    </option>
+
+  }
+
+</select>
+
+    <button (click)="predict()" [disabled]="loading" class="predict-btn">
+
+      @if (!loading) {
+        <span>🚀 Predict Risk</span>
+      }
+
+      @if (loading) {
+        <span class="spinner"></span>
+        <span>AI Analyzing...</span>
+      }
+
+    </button>
 
   </div>
 
+  <!-- AI LOADING -->
   @if (loading) {
-    <div class="loading">
-      Predicting...
+
+    <div class="dna-loader">
+
+      <div class="dna">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <p>Analyzing patient health patterns...</p>
+
     </div>
+
   }
 
+  <!-- RESULT -->
   @if (result) {
-    <div class="result-card">
-      <h3>Prediction Result</h3>
-      <p>
-        Risk Level:
-        <span [class.high]="result.high_risk"
-          [class.low]="!result.high_risk">
-          {{ result.high_risk ? 'HIGH RISK ⚠️' : 'LOW RISK ✅' }}
-        </span>
-      </p>
-      <p>
-        Probability: {{ result.risk_probability * 100 | number:'1.0-1' }}%
-      </p>
+
+    <div class="patient-card">
+
+      <h3>Patient Profile</h3>
+
+      <p><b>Age:</b> {{ formData.age }}</p>
+      <p><b>Gender:</b> {{ formData.gender === 1 ? 'Male' : 'Female' }}</p>
+      <p><b>Region:</b> {{ getRegionName() }}</p>
+
     </div>
+
+
+    <div class="result-card">
+
+      <h3>Prediction Result</h3>
+
+      <p class="risk-text">
+
+        Risk Level:
+
+        <span
+          [class.high]="result.high_risk"
+          [class.low]="!result.high_risk">
+
+          {{ result.high_risk ? 'HIGH RISK ⚠️' : 'LOW RISK ✅' }}
+
+        </span>
+
+      </p>
+
+
+      <!-- RISK METER -->
+      <div class="risk-meter">
+
+        <div
+          class="meter-circle"
+          [style.--risk]="result.risk_probability * 100">
+
+          <div class="meter-value">
+            {{ result.risk_probability * 100 | number:'1.0-0' }}%
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <p>Risk Probability</p>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="result.risk_probability * 100">
+        </div>
+      </div>
+
+
+      <div class="ai-explanation">
+
+        <h4>AI Explanation</h4>
+
+        <ul>
+          <li>
+            Age contributes
+            {{ formData.age > 50 ? 'higher risk' : 'lower risk' }}
+          </li>
+
+          <li>Region disease prevalence considered</li>
+
+          <li>Prediction generated using rule-based AI model</li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
   }
+
 </div>

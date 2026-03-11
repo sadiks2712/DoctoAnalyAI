@@ -20,13 +20,23 @@ export interface SummaryResponse {
   high_risk?: number;
 }
 
+/* =================================
+   🧠 RISK RESPONSE MODEL
+================================= */
+export interface RiskResponse {
+  high_risk: boolean;
+  risk_probability: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  // ✅ Always use exact backend URL
-  private baseUrl = 'https://doctoanalyai.onrender.com';
+  /* =================================
+     🌐 BACKEND URL
+  ================================= */
+  private readonly baseUrl = 'https://doctoanalyai.onrender.com';
 
   constructor(private http: HttpClient) {}
 
@@ -36,16 +46,23 @@ export class ApiService {
   getSummary(
     age?: number,
     gender?: number,
-    region?: string,   // ✅ FIXED (was string)
+    region?: number | string,
     disease?: string
   ): Observable<SummaryResponse> {
 
     let params = new HttpParams();
 
-    if (age !== undefined) params = params.set('age', age.toString());
-    if (gender !== undefined) params = params.set('gender', gender.toString());
-    if (region !== undefined) params = params.set('region', region.toString());
-    if (disease) params = params.set('disease', disease);
+    if (age !== undefined)
+      params = params.set('age', String(age));
+
+    if (gender !== undefined)
+      params = params.set('gender', String(gender));
+
+    if (region !== undefined)
+      params = params.set('region', String(region));
+
+    if (disease)
+      params = params.set('disease', disease);
 
     return this.http.get<SummaryResponse>(
       `${this.baseUrl}/summary`,
@@ -63,25 +80,36 @@ export class ApiService {
   /* =================================
      🧠 RISK PREDICTION
   ================================= */
-  predictRisk(data: any): Observable<any> {
+  predictRisk(data: {
+    age: number;
+    gender: number;
+    region: number;
+  }): Observable<RiskResponse> {
+
     const formData = new FormData();
 
-    // ✅ Ensure values are strings
-    formData.append('age', data.age.toString());
-    formData.append('gender', data.gender.toString());
-    formData.append('region', data.region.toString());
+    formData.append('age', String(data.age));
+    formData.append('gender', String(data.gender));
+    formData.append('region', String(data.region));
 
-    return this.http.post(`${this.baseUrl}/predict`, formData);
+    return this.http.post<RiskResponse>(
+      `${this.baseUrl}/predict`,
+      formData
+    );
   }
 
   /* =================================
      📤 UPLOAD DATASET
   ================================= */
   uploadDataset(file: File): Observable<any> {
+
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post(`${this.baseUrl}/upload-data`, formData);
+    return this.http.post(
+      `${this.baseUrl}/upload-data`,
+      formData
+    );
   }
 
   /* =================================
@@ -91,13 +119,13 @@ export class ApiService {
 
     let params = new HttpParams();
 
-    if (disease) {
+    if (disease)
       params = params.set('disease', disease);
-    }
 
     return this.http.get<MultiTrendPoint[]>(
       `${this.baseUrl}/trends`,
       { params }
     );
   }
+
 }

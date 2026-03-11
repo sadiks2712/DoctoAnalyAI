@@ -1,9 +1,9 @@
 import pandas as pd
 import os
 
-# =====================================================
+# =============================
 # DATASET LOADER
-# =====================================================
+# =============================
 def load_dataset():
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,9 +26,9 @@ def load_dataset():
         return pd.DataFrame()
 
 
-# =====================================================
+# =============================
 # SMART RISK PREDICTION
-# =====================================================
+# =============================
 def predict_risk(age: int, gender: int, region: int):
 
     df = load_dataset()
@@ -37,13 +37,9 @@ def predict_risk(age: int, gender: int, region: int):
     gender = int(gender)
     region = int(region)
 
-    print("INPUT:", age, gender, region)
-
     score = 0
 
-    # ---------------------
-    # AGE FACTOR
-    # ---------------------
+    # Age factor
     if age >= 70:
         score += 4
     elif age >= 55:
@@ -53,44 +49,33 @@ def predict_risk(age: int, gender: int, region: int):
     else:
         score += 1
 
-    # ---------------------
-    # GENDER FACTOR
-    # ---------------------
+    # Gender factor
     if gender == 1:
         score += 1
 
-    # ---------------------
-    # REGION FACTOR
-    # ---------------------
-    if region in [2, 3]:   # West / East
+    # Region factor
+    if region in [2, 3]:
         score += 1
 
-    # ---------------------
-    # DISEASE FACTOR
-    # ---------------------
+    # Disease factor (dataset driven)
     if not df.empty and "disease" in df.columns:
 
-        high_risk_keywords = ["COVID", "HEART", "CANCER", "STROKE", "DIABETES"]
+        high_risk_diseases = ["COVID", "HEART", "CANCER", "STROKE", "DIABETES"]
 
         diseases = df["disease"].astype(str).str.upper().tolist()
 
-        if any(keyword in disease for disease in diseases for keyword in high_risk_keywords):
+        if any(any(hrd in d for hrd in high_risk_diseases) for d in diseases):
             score += 1
 
-    # ---------------------
-    # FINAL PROBABILITY
-    # ---------------------
-    probability = round(min(score / 8, 1), 2)
-
-    print("SCORE:", score)
+    probability = round(min(score / 7, 1), 2)
 
     return {
         "high_risk": score >= 4,
         "risk_probability": probability
     }
 
-# =====================================================
+# =============================
 # LOAD MODEL (compatibility)
-# =====================================================
+# =============================
 def load_model():
     print("Smart risk predictor loaded")
