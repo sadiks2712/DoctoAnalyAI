@@ -33,7 +33,6 @@ def predict_risk(age: int, gender: int, region: int):
 
     df = load_dataset()
 
-    # ensure correct types
     age = int(age)
     gender = int(gender)
     region = int(region)
@@ -45,11 +44,11 @@ def predict_risk(age: int, gender: int, region: int):
     # ---------------------
     # AGE FACTOR
     # ---------------------
-    if age >= 65:
+    if age >= 70:
         score += 4
-    elif age >= 50:
+    elif age >= 55:
         score += 3
-    elif age >= 30:
+    elif age >= 40:
         score += 2
     else:
         score += 1
@@ -63,37 +62,19 @@ def predict_risk(age: int, gender: int, region: int):
     # ---------------------
     # REGION FACTOR
     # ---------------------
-    if not df.empty and "region" in df.columns:
-
-        df["region"] = pd.to_numeric(df["region"], errors="coerce")
-
-        region_counts = df["region"].value_counts().to_dict()
-
-        if region in region_counts:
-
-            max_cases = max(region_counts.values())
-
-            if region_counts[region] >= max_cases * 0.6:
-                score += 2
-            else:
-                score += 1
+    if region in [2, 3]:   # West / East
+        score += 1
 
     # ---------------------
     # DISEASE FACTOR
     # ---------------------
     if not df.empty and "disease" in df.columns:
 
-        high_risk_diseases = [
-            "COVID",
-            "Heart",
-            "Cancer",
-            "Stroke",
-            "Diabetes"
-        ]
+        high_risk_keywords = ["COVID", "HEART", "CANCER", "STROKE", "DIABETES"]
 
-        common_disease = df["disease"].mode()[0]
+        diseases = df["disease"].astype(str).str.upper().tolist()
 
-        if common_disease in high_risk_diseases:
+        if any(keyword in disease for disease in diseases for keyword in high_risk_keywords):
             score += 1
 
     # ---------------------
@@ -107,7 +88,6 @@ def predict_risk(age: int, gender: int, region: int):
         "high_risk": score >= 4,
         "risk_probability": probability
     }
-
 
 # =====================================================
 # LOAD MODEL (compatibility)
