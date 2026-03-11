@@ -19,15 +19,11 @@ app = FastAPI(title="Healthcare Analytics API")
 # =============================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:4200"
-    ],
-    allow_origin_regex=r"https://.*\.netlify\.app",
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # =============================
 # SAFE CSV
