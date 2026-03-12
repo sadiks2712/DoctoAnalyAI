@@ -87,11 +87,10 @@ def get_summary(age=None, gender=None, region=None, disease=None):
 
     print("📊 CSV columns:", list(df.columns))
     print("🦠 Detected disease column:", disease_col)
-    print("📅 Detected date column:", date_col)
 
-    # =============================
+    # =================================================
     # CLEAN NUMERIC DATA
-    # =============================
+    # =================================================
     if age_col:
         df[age_col] = pd.to_numeric(df[age_col], errors="coerce")
 
@@ -101,9 +100,11 @@ def get_summary(age=None, gender=None, region=None, disease=None):
     if region_col:
         df[region_col] = pd.to_numeric(df[region_col], errors="coerce")
 
-    # =============================
+    df = df.dropna()
+
+    # =================================================
     # APPLY FILTERS
-    # =============================
+    # =================================================
     if age is not None and age_col:
         df = df[df[age_col] == age]
 
@@ -116,16 +117,16 @@ def get_summary(age=None, gender=None, region=None, disease=None):
     if disease is not None and disease_col:
         df = df[df[disease_col].astype(str).str.contains(disease, case=False, na=False)]
 
-    # =============================
+    # =================================================
     # AVG AGE
-    # =============================
+    # =================================================
     avg_age = 0
     if age_col:
         avg_age = df[age_col].mean()
 
-    # =============================
+    # =================================================
     # DISEASE DISTRIBUTION
-    # =============================
+    # =================================================
     disease_counts = {}
     if disease_col:
         disease_counts = (
@@ -136,9 +137,9 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             .to_dict()
         )
 
-    # =============================
+    # =================================================
     # REGION DISTRIBUTION
-    # =============================
+    # =================================================
     region_distribution = {}
     if region_col:
         region_distribution = (
@@ -149,9 +150,9 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             .to_dict()
         )
 
-    # =============================
-    # HIGH RISK COUNT
-    # =============================
+    # =================================================
+    # HIGH RISK CALCULATION
+    # =================================================
     high_risk_count = 0
 
     if age_col and gender_col and region_col:
@@ -168,9 +169,9 @@ def get_summary(age=None, gender=None, region=None, disease=None):
 
             score = 0
 
-            age_val = int(row[age_col]) if pd.notna(row[age_col]) else 0
-            gender_val = int(row[gender_col]) if pd.notna(row[gender_col]) else 0
-            region_val = int(row[region_col]) if pd.notna(row[region_col]) else 0
+            age_val = int(row[age_col])
+            gender_val = int(row[gender_col])
+            region_val = int(row[region_col])
 
             # AGE FACTOR
             if age_val >= 70:
@@ -179,8 +180,6 @@ def get_summary(age=None, gender=None, region=None, disease=None):
                 score += 3
             elif age_val >= 40:
                 score += 2
-            else:
-                score += 1
 
             # GENDER FACTOR
             if gender_val == 1:
@@ -200,13 +199,15 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             if score >= 4:
                 high_risk_count += 1
 
-    # =============================
+    print("🔥 HIGH RISK COUNT:", high_risk_count)
+
+    # =================================================
     # RESPONSE
-    # =============================
+    # =================================================
     return {
         "total_records": len(df),
         "avg_age": round(avg_age, 1) if avg_age else 0,
-        "high_risk": high_risk_count,
+        "high_risk": high_risk_count,   # THIS IS THE IMPORTANT FIELD
         "disease_counts": disease_counts,
         "region_distribution": region_distribution,
         "detected_columns": list(df.columns)
