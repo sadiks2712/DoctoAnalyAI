@@ -32,7 +32,7 @@ def load_dataset():
 
 
 # =====================================================
-# SMART COLUMN DETECTION
+# COLUMN DETECTION
 # =====================================================
 def detect_columns(df):
 
@@ -49,16 +49,16 @@ def detect_columns(df):
         if "age" in c:
             age_col = columns[c]
 
-        if "gender" in c or "sex" in c:
+        elif "gender" in c or "sex" in c:
             gender_col = columns[c]
 
-        if "region" in c or "location" in c or "city" in c or "state" in c:
+        elif "region" in c or "location" in c or "state" in c:
             region_col = columns[c]
 
-        if "disease" in c or "condition" in c or "illness" in c:
+        elif "disease" in c or "condition" in c or "illness" in c:
             disease_col = columns[c]
 
-        if "date" in c or "month" in c or "year" in c or "time" in c:
+        elif "date" in c or "month" in c or "year" in c or "time" in c:
             date_col = columns[c]
 
     return age_col, gender_col, region_col, disease_col, date_col
@@ -85,11 +85,10 @@ def get_summary(age=None, gender=None, region=None, disease=None):
 
     age_col, gender_col, region_col, disease_col, date_col = detect_columns(df)
 
-    print("📊 CSV columns:", list(df.columns))
-    print("🦠 Detected disease column:", disease_col)
+    print("Detected Columns:", age_col, gender_col, region_col, disease_col)
 
     # =================================================
-    # CLEAN NUMERIC DATA
+    # CLEAN DATA
     # =================================================
     if age_col:
         df[age_col] = pd.to_numeric(df[age_col], errors="coerce")
@@ -118,16 +117,16 @@ def get_summary(age=None, gender=None, region=None, disease=None):
         df = df[df[disease_col].astype(str).str.contains(disease, case=False, na=False)]
 
     # =================================================
-    # AVG AGE
+    # AVERAGE AGE
     # =================================================
-    avg_age = 0
-    if age_col:
-        avg_age = df[age_col].mean()
+    avg_age = df[age_col].mean() if age_col else 0
+
 
     # =================================================
     # DISEASE DISTRIBUTION
     # =================================================
     disease_counts = {}
+
     if disease_col:
         disease_counts = (
             df[disease_col]
@@ -137,18 +136,28 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             .to_dict()
         )
 
+
     # =================================================
-    # REGION DISTRIBUTION
+    # REGION DISTRIBUTION (FIXED)
     # =================================================
     region_distribution = {}
+
     if region_col:
-        region_distribution = (
-            df[region_col]
-            .astype(str)
-            .value_counts()
-            .head(10)
-            .to_dict()
-        )
+
+        region_map = {
+            0: "North India",
+            1: "South India",
+            2: "West India",
+            3: "East India",
+            4: "Central India"
+        }
+
+        region_counts = df[region_col].value_counts()
+
+        for key, val in region_counts.items():
+            name = region_map.get(int(key), str(key))
+            region_distribution[name] = int(val)
+
 
     # =================================================
     # HIGH RISK CALCULATION
@@ -173,7 +182,6 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             gender_val = int(row[gender_col])
             region_val = int(row[region_col])
 
-            # AGE FACTOR
             if age_val >= 70:
                 score += 4
             elif age_val >= 55:
@@ -181,15 +189,12 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             elif age_val >= 40:
                 score += 2
 
-            # GENDER FACTOR
             if gender_val == 1:
                 score += 1
 
-            # REGION FACTOR
             if region_val in [2, 3]:
                 score += 1
 
-            # DISEASE FACTOR
             if disease_col:
                 disease_str = str(row[disease_col]).upper()
 
@@ -199,16 +204,19 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             if score >= 4:
                 high_risk_count += 1
 
-    print("🔥 HIGH RISK COUNT:", high_risk_count)
+
+    print("HIGH RISK COUNT:", high_risk_count)
 
     # =================================================
-    # RESPONSE
+    # FINAL RESPONSE
     # =================================================
     return {
         "total_records": len(df),
         "avg_age": round(avg_age, 1) if avg_age else 0,
-        "high_risk": high_risk_count,   # THIS IS THE IMPORTANT FIELD
+        "high_risk": high_risk_count,
         "disease_counts": disease_counts,
         "region_distribution": region_distribution,
-        "detected_columns": list(df.columns)
+        "detected_columns": list(df.columns),
+        "numeric_columns": df.select_dtypes(include="number").columns.tolist(),
+        "categorical_columns": df.select_dtypes(exclude="number").columns.tolist()
     }
