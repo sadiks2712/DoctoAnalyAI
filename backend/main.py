@@ -1,40 +1,54 @@
 from fastapi import FastAPI, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-
 from model import predict_risk, load_model
 from analysis import get_summary
 from quality import analyze_data_quality
 
+# Forecast imports
 from sklearn.linear_model import LinearRegression
 import numpy as np
 import pandas as pd
 import os
 
-
 app = FastAPI(title="Healthcare Analytics API")
 
+# =====================================================
+# 🚀 LOAD MODEL ON SERVER START
+# =====================================================
+@app.on_event("startup")
+def startup_event():
+    try:
+        load_model()
+        print("✅ AI model loaded successfully")
+    except Exception as e:
+        print("⚠️ Model load failed:", e)
 
-# =============================
-# CORS
-# =============================
+
+# =====================================================
+# ✅ CORS (Netlify + Render compatible)
+# =====================================================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# =============================
-# SAFE CSV
-# =============================
-def read_csv_safe(path):
+
+# =====================================================
+# 📁 Safe CSV Reader
+# =====================================================
+def read_csv_safe(path: str):
     try:
         return pd.read_csv(path, encoding="utf-8")
-    except:
+    except Exception:
         return pd.read_csv(path, encoding="latin1")
 
 
+# =====================================================
+# 📁 Dataset Selector
+# =====================================================
 def get_dataset_path():
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -49,17 +63,17 @@ def get_dataset_path():
     return default
 
 
-# =============================
-# HOME
-# =============================
+# =====================================================
+# 🏠 HOME
+# =====================================================
 @app.get("/")
 def home():
-    return {"message": "Healthcare API running successfully"}
+    return {"message": "Healthcare API running"}
 
 
-# =============================
-# SUMMARY
-# =============================
+# =====================================================
+# 📊 SUMMARY API
+# =====================================================
 @app.get("/summary")
 def summary(
     age: int | None = None,
@@ -70,9 +84,9 @@ def summary(
     return get_summary(age, gender, region, disease)
 
 
-# =============================
-# PREDICT
-# =============================
+# =====================================================
+# 🧠 RISK PREDICTION
+# =====================================================
 @app.post("/predict")
 def predict(
     age: int = Form(...),
@@ -82,100 +96,177 @@ def predict(
     return predict_risk(age, gender, region)
 
 
-# =============================
-# FORECAST
-# =============================
+# =====================================================
+# 🔮 FORECAST API
+# =====================================================
 @app.get("/forecast")
 def forecast_cases():
 
-    file_path = get_dataset_path()
-    df = read_csv_safe(file_path)
+    try:
 
-    if df.empty:
+        file_path = get_dataset_path()
+        df = read_csv_safe(file_path)
+
+        if df.empty:
+            return {"historical": [], "forecast": []}
+
+        df = df.reset_index(drop=True)
+        df["time"] = df.index
+
+        trend = df.groupby("time").size().reset_index(name="cases")
+
+        if trend.empty:
+            return {"historical": [], "forecast": []}
+
+        X = trend[["time"]]
+        y = trend["cases"]
+
+        model = LinearRegression()
+        model.fit(X, y)
+
+        future_time = np.arange(len(trend), len(trend) + 10).reshape(-1, 1)
+        predictions = model.predict(future_time)
+
+        return {
+            "historical": trend.tail(20).to_dict(orient="records"),
+            "forecast": predictions.round(2).tolist(),
+        }
+
+    except Exception as e:
+        print("❌ Forecast error:", e)
         return {"historical": [], "forecast": []}
 
-    # Assume 'date' column exists for grouping; adjust if needed
-    if 'date' not in df.columns:
-        return {"error": "Dataset must have a 'date' column for forecasting"}
 
-    df['date'] = pd.to_datetime(df['date'], errors='coerce')
-    df = df.dropna(subset=['date'])
+# =====================================================
+# 📈 MULTI-DISEASE TRENDS
+# =====================================================
+@app.get("/trends")
+def get_trends(disease: str | None = None):
 
-    trend = df.groupby(df['date'].dt.date).size().reset_index(name="cases")
-    trend['time'] = range(len(trend))
+    try:
 
-    X = trend[["time"]]
-    y = trend["cases"]
+        file_path = get_dataset_path()
+        df = read_csv_safe(file_path)
 
-    model = LinearRegression()
-    model.fit(X, y)
+        if df.empty:
+            return []
 
-    future_time = np.arange(len(trend), len(trend) + 10).reshape(-1, 1)
-    predictions = model.predict(future_time)
+        normalized_cols = {c.lower().strip(): c for c in df.columns}
 
-    return {
-        "historical": trend.tail(20).to_dict(orient="records"),
-        "forecast": predictions.round(2).tolist(),
-    }
+        disease_col = None
+        for key in ["disease", "disease_name", "disease name", "condition", "illness", "diagnosis"]:
+            if key in normalized_cols:
+                disease_col = normalized_cols[key]
+                break
+
+        if disease_col is None:
+            return []
+
+        date_col = None
+        for key in ["date", "month", "time", "year", "report_date"]:
+            if key in normalized_cols:
+                date_col = normalized_cols[key]
+                break
+
+        if date_col is None:
+            df["time_index"] = df.index
+            date_col = "time_index"
+
+        if disease:
+            df = df[df[disease_col] == disease]
+
+        if df.empty:
+            return []
+
+        trend = (
+            df.groupby([date_col, disease_col])
+            .size()
+            .reset_index(name="cases")
+        )
+
+        trend = trend.rename(
+            columns={
+                date_col: "date",
+                disease_col: "disease",
+            }
+        )
+
+        return trend.to_dict(orient="records")
+
+    except Exception as e:
+        print("❌ Trends error:", e)
+        return []
 
 
-# =============================
-# UPLOAD DATASET
-# =============================
+# =====================================================
+# 📤 UPLOAD DATASET
+# =====================================================
 @app.post("/upload-data")
 async def upload_data(file: UploadFile = File(...)):
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(BASE_DIR, "data")
+    try:
 
-    os.makedirs(data_dir, exist_ok=True)
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        data_dir = os.path.join(BASE_DIR, "data")
 
-    if not file.filename.lower().endswith(".csv"):
-        return {"error": "Only CSV files allowed"}
+        os.makedirs(data_dir, exist_ok=True)
 
-    file_path = os.path.join(data_dir, "healthcare.csv")
+        if not file.filename.lower().endswith(".csv"):
+            return {"error": "Only CSV files are allowed"}
 
-    contents = await file.read()
+        file_path = os.path.join(data_dir, "healthcare.csv")
 
-    with open(file_path, "wb") as f:
-        f.write(contents)
+        contents = await file.read()
 
-    df = read_csv_safe(file_path)
+        if not contents:
+            return {"error": "Uploaded file is empty"}
 
-    quality_report = analyze_data_quality(df)
+        with open(file_path, "wb") as f:
+            f.write(contents)
 
-    load_model()
+        df = read_csv_safe(file_path)
 
-    return {
-        "message": "File uploaded successfully",
-        "rows": len(df),
-        "columns": list(df.columns),
-        "quality": quality_report
-    }
+        if df.empty:
+            return {"error": "CSV has no rows"}
+
+        if len(df.columns) < 2:
+            return {"error": "CSV must contain multiple columns"}
+
+        quality_report = analyze_data_quality(df)
+
+        # 🔁 Retrain model after dataset upload
+        try:
+            load_model()
+            model_status = "retrained"
+        except Exception as e:
+            print("⚠️ Model retrain failed:", e)
+            model_status = "fallback_dummy"
+
+        return {
+            "message": "File uploaded successfully",
+            "rows": int(len(df)),
+            "columns": list(df.columns),
+            "status": "uploaded",
+            "model_status": model_status,
+            "quality": quality_report,
+        }
+
+    except Exception as e:
+        print("❌ Upload error:", e)
+        return {"error": str(e)}
 
 
-# =============================
-# TRENDS (added for api.ts compatibility)
-# =============================
-@app.get("/trends")
-def get_trends(disease: str | None = None):
-    file_path = get_dataset_path()
-    df = read_csv_safe(file_path)
+# =====================================================
+# 📊 REGION RISK API
+# =====================================================
+@app.get("/region-risk")
+def region_risk():
+    return []
 
-    if df.empty:
-        return []
 
-    # Assume 'date' and 'disease' columns exist
-    if 'date' not in df.columns or 'disease' not in df.columns:
-        return {"error": "Dataset must have 'date' and 'disease' columns"}
-
-    df['date'] = pd.to_datetime(df['date'], errors='coerce')
-    df = df.dropna(subset=['date'])
-
-    if disease:
-        df = df[df['disease'].str.contains(disease, case=False, na=False)]
-
-    trend = df.groupby([df['date'].dt.date, 'disease']).size().reset_index(name="cases")
-    trend = trend.rename(columns={'date': 'date'})
-
-    return trend.to_dict(orient="records")
+# =====================================================
+# 🚨 OUTBREAK ALERT API
+# =====================================================
+@app.get("/outbreak-alert")
+def outbreak_alert():
+    return {"alerts": []}

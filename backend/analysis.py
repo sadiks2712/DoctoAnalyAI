@@ -1,7 +1,12 @@
 import pandas as pd
 import os
 
+
+# =====================================================
+# DATASET LOADER
+# =====================================================
 def load_dataset():
+
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(BASE_DIR, "data")
 
@@ -9,16 +14,61 @@ def load_dataset():
     default = os.path.join(data_dir, "default_healthcare.csv")
 
     try:
+
         if os.path.exists(uploaded) and os.path.getsize(uploaded) > 0:
-            return pd.read_csv(uploaded)
-        if os.path.exists(default):
-            return pd.read_csv(default)
-        return pd.DataFrame()
+            df = pd.read_csv(uploaded)
+
+        elif os.path.exists(default):
+            df = pd.read_csv(default)
+
+        else:
+            return pd.DataFrame()
+
+        return df
+
     except Exception as e:
         print("Dataset load failed:", e)
         return pd.DataFrame()
 
+
+# =====================================================
+# SMART COLUMN DETECTION
+# =====================================================
+def detect_columns(df):
+
+    columns = {c.lower(): c for c in df.columns}
+
+    age_col = None
+    gender_col = None
+    region_col = None
+    disease_col = None
+    date_col = None
+
+    for c in columns:
+
+        if "age" in c:
+            age_col = columns[c]
+
+        if "gender" in c or "sex" in c:
+            gender_col = columns[c]
+
+        if "region" in c or "location" in c or "city" in c or "state" in c:
+            region_col = columns[c]
+
+        if "disease" in c or "condition" in c or "illness" in c:
+            disease_col = columns[c]
+
+        if "date" in c or "month" in c or "year" in c or "time" in c:
+            date_col = columns[c]
+
+    return age_col, gender_col, region_col, disease_col, date_col
+
+
+# =====================================================
+# SUMMARY API
+# =====================================================
 def get_summary(age=None, gender=None, region=None, disease=None):
+
     df = load_dataset()
 
     if df.empty:
@@ -27,44 +77,102 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             "avg_age": 0,
             "high_risk": 0,
             "disease_counts": {},
-            "region_distribution": {}
+            "region_distribution": {},
+            "detected_columns": []
         }
 
-    # Apply filters
-    if age is not None and "age" in df.columns:
-        df = df[df["age"] == age]
+    df = df.copy()
 
-    if gender is not None and "gender" in df.columns:
-        df = df[df["gender"] == gender]
+    age_col, gender_col, region_col, disease_col, date_col = detect_columns(df)
 
-    if region is not None and "region" in df.columns:
-        df = df[df["region"] == region]
+    print("📊 CSV columns:", list(df.columns))
+    print("🦠 Detected disease column:", disease_col)
+    print("📅 Detected date column:", date_col)
 
-    if disease is not None and "disease" in df.columns:
-        # Changed to substring match for consistency with trends endpoint
-        df = df[df["disease"].str.contains(disease, case=False, na=False)]
+    # =============================
+    # CLEAN NUMERIC DATA
+    # =============================
+    if age_col:
+        df[age_col] = pd.to_numeric(df[age_col], errors="coerce")
 
-    avg_age = df["age"].mean() if "age" in df.columns else 0
+    if gender_col:
+        df[gender_col] = pd.to_numeric(df[gender_col], errors="coerce")
 
+    if region_col:
+        df[region_col] = pd.to_numeric(df[region_col], errors="coerce")
+
+    # =============================
+    # APPLY FILTERS
+    # =============================
+    if age is not None and age_col:
+        df = df[df[age_col] == age]
+
+    if gender is not None and gender_col:
+        df = df[df[gender_col] == gender]
+
+    if region is not None and region_col:
+        df = df[df[region_col] == region]
+
+    if disease is not None and disease_col:
+        df = df[df[disease_col].astype(str).str.contains(disease, case=False, na=False)]
+
+    # =============================
+    # AVG AGE
+    # =============================
+    avg_age = 0
+    if age_col:
+        avg_age = df[age_col].mean()
+
+    # =============================
+    # DISEASE DISTRIBUTION
+    # =============================
     disease_counts = {}
+    if disease_col:
+        disease_counts = (
+            df[disease_col]
+            .astype(str)
+            .value_counts()
+            .head(10)
+            .to_dict()
+        )
+
+    # =============================
+    # REGION DISTRIBUTION
+    # =============================
     region_distribution = {}
+    if region_col:
+        region_distribution = (
+            df[region_col]
+            .astype(str)
+            .value_counts()
+            .head(10)
+            .to_dict()
+        )
 
-    if "disease" in df.columns:
-        disease_counts = df["disease"].value_counts().head(10).to_dict()
-
-    if "region" in df.columns:
-        region_distribution = df["region"].value_counts().head(10).to_dict()
-
-    # Compute high_risk count based on rule-based scoring (assuming age, gender, region columns exist)
+    # =============================
+    # HIGH RISK COUNT
+    # =============================
     high_risk_count = 0
-    if all(col in df.columns for col in ["age", "gender", "region"]):
-        for _, row in df.iterrows():
-            score = 0
-            age_val = int(row["age"])
-            gender_val = int(row["gender"])
-            region_val = int(row["region"])
 
-            # Age factor
+    if age_col and gender_col and region_col:
+
+        high_risk_diseases = [
+            "COVID",
+            "HEART",
+            "CANCER",
+            "STROKE",
+            "DIABETES"
+        ]
+
+        for _, row in df.iterrows():
+
+            score = 0
+
+            age_val = int(row[age_col]) if pd.notna(row[age_col]) else 0
+            gender_val = int(row[gender_col]) if pd.notna(row[gender_col]) else 0
+            region_val = int(row[region_col]) if pd.notna(row[region_col]) else 0
+
+            # AGE FACTOR
             if age_val >= 70:
                 score += 4
             elif age_val >= 55:
@@ -74,28 +182,32 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             else:
                 score += 1
 
-            # Gender factor
+            # GENDER FACTOR
             if gender_val == 1:
                 score += 1
 
-            # Region factor
+            # REGION FACTOR
             if region_val in [2, 3]:
                 score += 1
 
-            # Disease factor (if disease column exists)
-            if "disease" in df.columns:
-                high_risk_diseases = ["COVID", "HEART", "CANCER", "STROKE", "DIABETES"]
-                disease_str = str(row["disease"]).upper()
-                if any(hrd in disease_str for hrd in high_risk_diseases):
+            # DISEASE FACTOR
+            if disease_col:
+                disease_str = str(row[disease_col]).upper()
+
+                if any(d in disease_str for d in high_risk_diseases):
                     score += 1
 
             if score >= 4:
                 high_risk_count += 1
 
+    # =============================
+    # RESPONSE
+    # =============================
     return {
         "total_records": len(df),
-        "avg_age": round(avg_age, 1),
+        "avg_age": round(avg_age, 1) if avg_age else 0,
         "high_risk": high_risk_count,
         "disease_counts": disease_counts,
-        "region_distribution": region_distribution
+        "region_distribution": region_distribution,
+        "detected_columns": list(df.columns)
     }
