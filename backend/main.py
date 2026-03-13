@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from model import predict_risk, load_model
 from analysis import get_summary
 from quality import analyze_data_quality
-
+from recommendation import get_recommendations
 # Forecast imports
 from sklearn.linear_model import LinearRegression
 import numpy as np
@@ -270,3 +270,20 @@ def region_risk():
 @app.get("/outbreak-alert")
 def outbreak_alert():
     return {"alerts": []}
+# =====================================================
+# 🚨 Recommandation
+# =====================================================    
+
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+
+    df = pd.read_csv(file.file)
+
+    risk = predict_risk(df)
+
+    recommendations = get_recommendations(risk)
+
+    return {
+        "risk_level": risk,
+        "recommendations": recommendations
+    }    

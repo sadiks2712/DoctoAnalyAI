@@ -1,98 +1,65 @@
 <div id="dashboard-report" class="dashboard-container">
 
-  <!-- 🔴 Live Alert -->
   <div class="live-alert">
     🔴 LIVE HEALTH MONITOR
   </div>
-  @if (selectedDisease || selectedRegion) {
-    <button
-      class="export-btn"
-      (click)="resetFilters()">
-      🔄 Reset Filters
-    </button>
-  }
 
-  <!-- 🧠 Detected Columns -->
-  @if (summary?.detected_columns?.length) {
-    <div>
-      <h3 class="section-title">Detected Columns</h3>
-      <div class="chip-container">
-        @for (col of summary.detected_columns; track col) {
-          <span class="chip">
-            {{ col }}
-          </span>
-        }
+  <button *ngIf="selectedDisease || selectedRegion"
+          class="export-btn"
+          (click)="resetFilters()">
+    🔄 Reset Filters
+  </button>
+
+  <div *ngIf="loading">
+    Loading dashboard...
+  </div>
+
+  <div *ngIf="!loading">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+
+      <div class="card">
+        <h3>Total Records</h3>
+        <p class="counter">{{ animatedTotal }}</p>
       </div>
-    </div>
-  }
 
-  <!-- ⭐ LOADING -->
-  @if (loading) {
-    <div class="skeleton-container">
-      <div class="skeleton-card"></div>
-      <div class="skeleton-card"></div>
-    </div>
-  }
-
-  <!-- ⭐ WARNING -->
-  @if (warningMessage && !loading) {
-    <div class="warning">
-      ⚠️ {{ warningMessage }}
-    </div>
-  }
-
-  <!-- ⭐ NO DATA -->
-  @if (!loading && noData) {
-    <div class="no-data">
-      📂 Upload dataset to view analytics
-    </div>
-  }
-
-  <!-- ⭐ MAIN CONTENT -->
-  @if (!loading && !noData) {
-    <div class="fade-in">
-      <!-- ================= KPI GRID ================= -->
-      <div class="kpi-grid">
-        <div class="card">
-          <h3>Total Records</h3>
-          <p class="counter">{{ animatedTotal }}</p>
-        </div>
-        <div class="card">
-          <h3>Average Age</h3>
-          <p class="counter">{{ animatedAvgAge }}</p>
-        </div>
+      <div class="card">
+        <h3>Average Age</h3>
+        <p class="counter">{{ animatedAvgAge }}</p>
       </div>
-      <!-- ================= CHART GRID ================= -->
-      <div class="chart-grid">
-        <!-- Disease Chart -->
-        @if (diseaseChartData) {
-          <div class="chart-card">
-            <h3>Disease Distribution</h3>
-            @if (diseaseChartData) {
-              <canvas
-                baseChart
-                [data]="diseaseChartData"
-                [options]="diseaseChartOptions"
-                [type]="diseaseChartType">
-              </canvas>
-            }
-          </div>
-        }
-        <!-- Region Chart -->
-        @if (regionChartData) {
-          <div class="chart-card">
-            <h3>Region Distribution</h3>
-            @if (regionChartData) {
-              <canvas
-                baseChart
-                [data]="regionChartData"
-                [options]="regionChartOptions"
-                [type]="regionChartType">
-              </canvas>
-            }
-          </div>
-        }
+
+      <div class="card">
+        <h3>High-Risk Cases</h3>
+        <p class="counter">{{ animatedHighRisk }}</p>
       </div>
+
     </div>
-  }
+
+
+    <!-- CHARTS -->
+    <div class="chart-grid">
+
+      <div class="chart-card" *ngIf="diseaseChartData">
+        <h3>Disease Distribution</h3>
+        <canvas baseChart
+          [data]="diseaseChartData"
+          [options]="diseaseChartOptions"
+          [type]="diseaseChartType">
+        </canvas>
+      </div>
+
+      <div class="chart-card" *ngIf="regionChartData">
+        <h3>Region Distribution</h3>
+        <canvas baseChart
+          [data]="regionChartData"
+          [options]="regionChartOptions"
+          [type]="regionChartType">
+        </canvas>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>

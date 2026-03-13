@@ -3,6 +3,7 @@ import os
 from sklearn.ensemble import RandomForestClassifier
 
 model = None
+feature_columns = None
 
 
 # ==============================
@@ -37,6 +38,7 @@ def load_dataset():
 def load_model():
 
     global model
+    global feature_columns
 
     df = load_dataset()
 
@@ -69,9 +71,39 @@ def load_model():
 
     df = df.copy()
 
+    # ======================
+    # CLEAN AGE
+    # ======================
     df[age_col] = pd.to_numeric(df[age_col], errors="coerce")
-    df[gender_col] = pd.to_numeric(df[gender_col], errors="coerce")
-    df[region_col] = pd.to_numeric(df[region_col], errors="coerce")
+
+    # ======================
+    # CLEAN GENDER
+    # ======================
+    df[gender_col] = df[gender_col].astype(str).str.lower()
+
+    gender_map = {
+        "male": 1,
+        "m": 1,
+        "female": 0,
+        "f": 0
+    }
+
+    df[gender_col] = df[gender_col].map(gender_map)
+
+    # ======================
+    # CLEAN REGION
+    # ======================
+    df[region_col] = df[region_col].astype(str).str.lower()
+
+    region_map = {
+        "north": 0,
+        "south": 1,
+        "west": 2,
+        "east": 3,
+        "central": 4
+    }
+
+    df[region_col] = df[region_col].map(region_map)
 
     df = df.dropna()
 
@@ -80,6 +112,9 @@ def load_model():
         model = None
         return
 
+    # ======================
+    # CREATE RISK LABEL
+    # ======================
     risk = []
 
     for _, row in df.iterrows():
@@ -100,14 +135,16 @@ def load_model():
         if gender == 1:
             score += 1
 
-        if region in [2,3]:
+        if region in [2, 3]:
             score += 1
 
         risk.append(1 if score >= 4 else 0)
 
     df["risk"] = risk
 
-    X = df[[age_col, gender_col, region_col]]
+    feature_columns = [age_col, gender_col, region_col]
+
+    X = df[feature_columns]
     y = df["risk"]
 
     model = RandomForestClassifier(n_estimators=100)
@@ -115,12 +152,15 @@ def load_model():
     model.fit(X, y)
 
     print("✅ Model trained successfully")
+
+
 # ==============================
 # PREDICT RISK
 # ==============================
-def predict_risk(age:int, gender:int, region:int):
+def predict_risk(age: int, gender: int, region: int):
 
     global model
+    global feature_columns
 
     if model is None:
         load_model()
@@ -133,14 +173,14 @@ def predict_risk(age:int, gender:int, region:int):
     if gender == 1:
         explanation.append("Male patients statistically have slightly higher risk")
 
-    if region in [2,3]:
+    if region in [2, 3]:
         explanation.append("Region shows higher disease prevalence")
 
     try:
 
         data = pd.DataFrame(
             [[age, gender, region]],
-            columns=["age","gender","region"]
+            columns=feature_columns
         )
 
         prediction = model.predict(data)[0]
@@ -162,7 +202,7 @@ def predict_risk(age:int, gender:int, region:int):
         if gender == 1:
             score += 1
 
-        if region in [2,3]:
+        if region in [2, 3]:
             score += 1
 
         probability = min(score / 7, 1)
@@ -178,6 +218,6 @@ def predict_risk(age:int, gender:int, region:int):
     return {
         "risk_level": risk_level,
         "high_risk": bool(prediction),
-        "risk_probability": round(float(probability),2),
+        "risk_probability": round(float(probability), 2),
         "explanation": explanation
     }

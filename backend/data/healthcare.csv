@@ -1,61 +1,7 @@
-﻿age,gender,region,disease,date
-72,1,2,Heart Disease,05-01-2024
-68,1,2,Heart Disease,10-01-2024
-75,1,2,Heart Disease,12-02-2024
-65,0,2,COVID,18-02-2024
-70,1,3,COVID,02-03-2024
-34,1,0,Flu,05-03-2024
-29,0,1,Flu,06-03-2024
-52,1,2,Diabetes,01-04-2024
-61,1,3,Stroke,03-04-2024
-47,0,4,Asthma,05-04-2024
-73,1,2,Heart Disease,01-05-2024
-66,1,2,Heart Disease,03-05-2024
-55,0,3,COVID,04-05-2024
-39,1,0,Flu,10-05-2024
-31,0,1,Flu,12-05-2024
-74,1,2,Heart Disease,01-06-2024
-69,1,2,Heart Disease,02-06-2024
-71,1,3,Stroke,04-06-2024
-48,0,4,Asthma,06-06-2024
-28,1,0,Flu,10-06-2024
-63,1,2,Diabetes,01-07-2024
-67,1,3,COVID,05-07-2024
-36,0,1,Flu,10-07-2024
-45,1,4,Asthma,15-07-2024
-76,1,2,Heart Disease,01-08-2024
-72,1,2,Heart Disease,03-08-2024
-60,0,3,Stroke,04-08-2024
-30,1,0,Flu,08-08-2024
-33,0,1,Flu,12-08-2024
-58,1,4,Asthma,15-08-2024
-72,1,2,Heart Disease,05-01-2024
-75,1,2,Heart Disease,10-01-2024
-70,1,2,Heart Disease,15-01-2024
-68,1,2,Heart Disease,02-02-2024
-73,1,2,Heart Disease,10-02-2024
-65,1,3,Stroke,15-02-2024
-67,1,3,Stroke,01-03-2024
-71,1,3,Stroke,08-03-2024
-69,1,3,Stroke,15-03-2024
-74,1,2,COVID,01-04-2024
-76,1,2,COVID,05-04-2024
-72,1,2,COVID,08-04-2024
-66,1,3,Diabetes,12-04-2024
-70,1,3,Diabetes,20-04-2024
-68,1,3,Diabetes,02-05-2024
-77,1,2,Heart Disease,08-05-2024
-75,1,2,Heart Disease,15-05-2024
-73,1,2,Heart Disease,20-05-2024
-79,1,3,Cancer,01-06-2024
-78,1,3,Cancer,05-06-2024
-76,1,3,Cancer,12-06-2024
-74,1,3,Cancer,20-06-2024
-72,1,2,Heart Disease,02-07-2024
-71,1,2,Heart Disease,05-07-2024
-70,1,2,Heart Disease,08-07-2024
-68,1,3,Stroke,15-07-2024
-69,1,3,Stroke,20-07-2024
-73,1,3,Stroke,25-07-2024
-75,1,2,Heart Disease,01-08-2024
-78,1,2,Heart Disease,05-08-2024
+Age,Gender,Region,Disease,Date
+65,Male,West,Heart Disease,2024-01-01
+72,Female,East,Stroke,2024-01-02
+50,Female,North,Flu,2024-01-03
+60,Male,West,COVID,2024-01-04
+55,Female,South,Diabetes,2024-01-05
+45,Male,Central,Asthma,2024-01-06

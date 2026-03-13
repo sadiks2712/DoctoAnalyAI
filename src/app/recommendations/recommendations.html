@@ -1,14 +1,51 @@
-<div class="rec-container">
+<canvas id="aiNetwork"></canvas>
 
-  <h2>AI Recommendations</h2>
+<div class="recommend-container">
 
-  <div class="rec-grid">
-    @for (tip of tips; track tip) {
-      <div class="rec-card">
-        <h3>{{ tip.title }}</h3>
-        <p>{{ tip.desc }}</p>
-      </div>
-    }
-  </div>
+<h1 class="title">AI Health Recommendations</h1>
+
+<h2 class="risk">
+Risk Level: <span [ngClass]="risk">{{risk}}</span>
+</h2>
+
+<div class="gauge">
+
+<div class="circle">
+<div class="inside-circle">
+{{animatedScore}}%
+</div>
+</div>
+
+<p class="gauge-label">Health Score</p>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="icon runner">🏃</div>
+<h3>Exercise</h3>
+<p>{{exercise}}</p>
+</div>
+
+<div class="card">
+<div class="icon food">🥗</div>
+<h3>Diet</h3>
+<p>{{diet}}</p>
+</div>
+
+<div class="card">
+<div class="icon sleep">🌙</div>
+<h3>Sleep</h3>
+<p>{{sleep}}</p>
+</div>
+
+<div class="card">
+<div class="icon lab">🧪</div>
+<h3>Preventive Tests</h3>
+<p>{{tests}}</p>
+</div>
+
+</div>
 
 </div>

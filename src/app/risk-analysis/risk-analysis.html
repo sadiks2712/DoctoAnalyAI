@@ -3,11 +3,7 @@
 </div>
 
 <div class="particles">
-  <span></span>
-  <span></span>
-  <span></span>
-  <span></span>
-  <span></span>
+  <span></span><span></span><span></span><span></span><span></span>
 </div>
 
 <div class="risk-container">
@@ -16,67 +12,71 @@
 
   <div class="form-card">
 
-    <label>Age</label>
-    <input type="number" [(ngModel)]="formData.age" min="1" max="120">
+    <!-- AGE -->
+    <label for="age">Age</label>
+    <input
+      id="age"
+      name="age"
+      type="number"
+      [(ngModel)]="formData.age"
+      min="1"
+      max="120"
+    >
 
-    <label>Gender</label>
-    <select [(ngModel)]="formData.gender">
+    <!-- GENDER -->
+    <label for="gender">Gender</label>
+    <select
+      id="gender"
+      name="gender"
+      [(ngModel)]="formData.gender"
+    >
       <option [ngValue]="1">Male</option>
       <option [ngValue]="0">Female</option>
     </select>
 
- <label>Region</label>
-<select [(ngModel)]="formData.region">
+    <!-- REGION -->
+    <label for="region">Region</label>
+    <select
+      id="region"
+      name="region"
+      [(ngModel)]="formData.region"
+    >
+      <option *ngFor="let region of regions" [ngValue]="region.value">
+        {{ region.name }}
+      </option>
+    </select>
 
-  @for (region of regions; track region.value) {
+    <!-- BUTTON -->
+    <button
+      type="button"
+      (click)="predict()"
+      [disabled]="loading"
+      class="predict-btn"
+    >
+      <span *ngIf="!loading">🚀 Predict Risk</span>
 
-    <option [ngValue]="region.value">
-      {{ region.name }}
-    </option>
-
-  }
-
-</select>
-
-    <button (click)="predict()" [disabled]="loading" class="predict-btn">
-
-      @if (!loading) {
-        <span>🚀 Predict Risk</span>
-      }
-
-      @if (loading) {
-        <span class="spinner"></span>
-        <span>AI Analyzing...</span>
-      }
-
+      <span *ngIf="loading" class="spinner"></span>
+      <span *ngIf="loading">AI Analyzing...</span>
     </button>
 
   </div>
 
+
   <!-- AI LOADING -->
-  @if (loading) {
+  <div *ngIf="loading" class="dna-loader">
 
-    <div class="dna-loader">
-
-      <div class="dna">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-
-      <p>Analyzing patient health patterns...</p>
-
+    <div class="dna">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
     </div>
 
-  }
+    <p>Analyzing patient health patterns...</p>
+
+  </div>
+
 
   <!-- RESULT -->
-  @if (result) {
+  <div *ngIf="result">
 
     <div class="patient-card">
 
@@ -93,15 +93,20 @@
 
       <h3>Prediction Result</h3>
 
+      <!-- RISK LEVEL -->
       <p class="risk-text">
 
         Risk Level:
 
         <span
-          [class.high]="result.high_risk"
-          [class.low]="!result.high_risk">
+          [class.high]="result.risk_level === 'HIGH'"
+          [class.moderate]="result.risk_level === 'MODERATE'"
+          [class.low]="result.risk_level === 'LOW'"
+        >
 
-          {{ result.high_risk ? 'HIGH RISK ⚠️' : 'LOW RISK ✅' }}
+          {{ result.risk_level === 'HIGH' ? 'HIGH RISK ⚠️' :
+             result.risk_level === 'MODERATE' ? 'MODERATE RISK ⚡' :
+             'LOW RISK ✅' }}
 
         </span>
 
@@ -113,7 +118,8 @@
 
         <div
           class="meter-circle"
-          [style.--risk]="result.risk_probability * 100">
+          [style.--risk]="result.risk_probability * 100"
+        >
 
           <div class="meter-value">
             {{ result.risk_probability * 100 | number:'1.0-0' }}%
@@ -127,33 +133,39 @@
       <p>Risk Probability</p>
 
       <div class="progress-bar">
+
         <div
           class="progress-fill"
-          [style.width.%]="result.risk_probability * 100">
-        </div>
+          [style.width.%]="result.risk_probability * 100"
+        ></div>
+
       </div>
 
 
-      <div class="ai-explanation">
+      <!-- AI EXPLANATION -->
+      <div class="ai-explanation" *ngIf="result.explanation?.length">
 
-        <h4>AI Explanation</h4>
+        <h4>🧠 AI Explanation</h4>
 
         <ul>
-          <li>
-            Age contributes
-            {{ formData.age > 50 ? 'higher risk' : 'lower risk' }}
+          <li *ngFor="let reason of result.explanation">
+            {{ reason }}
           </li>
-
-          <li>Region disease prevalence considered</li>
-
-          <li>Prediction generated using rule-based AI model</li>
-
         </ul>
 
       </div>
+      <div class="risk-result" *ngIf="result">
+
+  <h2>Risk Level: {{result.risk_level}}</h2>
+
+  <button (click)="goToRecommendation()">
+    See Recommendations
+  </button>
+
+</div>
 
     </div>
 
-  }
+  </div>
 
 </div>

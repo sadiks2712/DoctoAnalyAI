@@ -11,32 +11,32 @@ import { UploadComponent } from './upload/upload';
 
 export const routes: Routes = [
 
-  // 🔑 First page → Login
- 
+  // Landing page
   { path: '', component: LandingComponent },
+
+  // Login page
   { path: 'login', component: LoginComponent },
 
-  // 🌐 Landing page (after login)
-  { 
-    path: 'landing', 
-    component: LandingComponent,
-    canActivate: [authGuard] 
-  },
-
-  // 🔐 Protected app shell (with navbar/layout)
+  // Protected app layout
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
+
+      { path: 'landing', component: LandingComponent },
       { path: 'upload', component: UploadComponent },
       { path: 'dashboard', component: Dashboard },
       { path: 'risk', component: RiskAnalysis },
       { path: 'trends', component: Trends },
+
+      // ✅ Recommendation page
       { path: 'recommendations', component: Recommendations }
+
     ]
   },
 
-  // 🚫 fallback
-  { path: '**', redirectTo: 'login' }
+  // Fallback
+  { path: '**', redirectTo: '' }
+
 ];

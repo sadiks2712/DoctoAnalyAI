@@ -1,11 +1,11 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
+import { CommonModule } from '@angular/common';   // ✅ ADD THIS
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],  // ✅ ADD HERE
   templateUrl: './hero.html',
   styleUrls: ['./hero.css']
 })
@@ -16,7 +16,6 @@ export class Hero implements AfterViewInit, OnInit {
   regions = 0;
   accuracy = 0;
 
-  // smooth scroll
   scrollToFeatures() {
     document.getElementById('features')
       ?.scrollIntoView({ behavior: 'smooth' });
@@ -30,7 +29,6 @@ export class Hero implements AfterViewInit, OnInit {
     this.initReveal();
   }
 
-  /* ⭐ COUNTERS */
   startCounters() {
     this.animateValue('totalRecords', 12500, 1200);
     this.animateValue('highRisk', 3200, 1200);
@@ -43,34 +41,41 @@ export class Hero implements AfterViewInit, OnInit {
     end: number,
     duration: number
   ) {
+
     const increment = end / (duration / 16);
 
     const timer = setInterval(() => {
+
       (this as any)[key] += increment;
 
       if ((this as any)[key] >= end) {
+
         (this as any)[key] = end;
         clearInterval(timer);
+
       }
 
       (this as any)[key] = Math.floor((this as any)[key]);
+
     }, 16);
   }
 
-  /* ⭐ SCROLL REVEAL */
   initReveal() {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
+
+    const observer = new IntersectionObserver(entries => {
+
+      entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+
+      });
+
+    }, { threshold: 0.15 });
 
     document.querySelectorAll('.fade-up')
       .forEach(el => observer.observe(el));
+
   }
 }

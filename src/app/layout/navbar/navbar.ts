@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
@@ -12,28 +12,43 @@ import { AuthService } from '../../services/auth';
 export class Navbar {
 
   menuOpen = false;
+  scrolled = false;
 
   constructor(
     private auth: AuthService,
     private router: Router
   ) {}
 
-  toggleMenu() {
+  toggleMenu(){
     this.menuOpen = !this.menuOpen;
   }
 
-  // ✅ Proper Logout (Fully Working)
-  async logout() {
-    try {
-      // 1️⃣ Sign out from Firebase
+  /* ===== NAVBAR SCROLL EFFECT ===== */
+
+  @HostListener('window:scroll', [])
+  onScroll(){
+
+    if(window.scrollY > 50){
+      this.scrolled = true;
+    }else{
+      this.scrolled = false;
+    }
+
+  }
+
+  /* ===== LOGOUT ===== */
+
+  async logout(){
+    try{
+
       await this.auth.logout();
       console.log('User logged out successfully');
 
-      // 2️⃣ Redirect explicitly to login page
-      await this.router.navigateByUrl('/login', { replaceUrl: true });
+      await this.router.navigateByUrl('/login',{replaceUrl:true});
 
-    } catch (error) {
-      console.error('Logout failed:', error);
+    }catch(error){
+      console.error('Logout failed:',error);
     }
   }
+
 }

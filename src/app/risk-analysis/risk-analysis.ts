@@ -1,7 +1,26 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { ApiService } from '../services/api';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { ApiService, RiskResponse } from '../services/api';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+interface Region {
+  name: string;
+  value: number;
+}
+
+interface RiskForm {
+  age: number;
+  gender: number;
+  region: number;
+}
+
+interface NodePoint {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+}
 
 @Component({
   selector: 'app-risk',
@@ -10,15 +29,21 @@ import { CommonModule } from '@angular/common';
   templateUrl: './risk-analysis.html',
   styleUrls: ['./risk-analysis.css']
 })
-export class RiskAnalysis implements AfterViewInit {
+export class RiskAnalysis implements AfterViewInit, OnDestroy {
 
-  formData = {
+  // ================================
+  // FORM DATA
+  // ================================
+  formData: RiskForm = {
     age: 50,
     gender: 1,
     region: 0
   };
 
-  regions = [
+  // ================================
+  // REGIONS
+  // ================================
+  regions: Region[] = [
     { name: 'North India', value: 0 },
     { name: 'South India', value: 1 },
     { name: 'West India', value: 2 },
@@ -26,16 +51,25 @@ export class RiskAnalysis implements AfterViewInit {
     { name: 'Central India', value: 4 }
   ];
 
-  result: { high_risk: boolean; risk_probability: number } | null = null;
-
+  result: RiskResponse | null = null;
   loading = false;
 
-  constructor(private api: ApiService) {}
+  private resizeHandler?: () => void;
 
+  constructor(private api: ApiService, private router: Router) {}
+
+  // ================================
+  // PREDICT RISK
+  // ================================
   predict() {
 
-    if (!this.formData.age || this.formData.age <= 0) {
-      alert("Please enter a valid age greater than 0");
+    if (!this.formData.age || this.formData.age < 1) {
+      alert("Please enter a valid age");
+      return;
+    }
+
+    if (this.formData.gender === undefined || this.formData.region === undefined) {
+      alert("Please complete all fields");
       return;
     }
 
@@ -44,39 +78,71 @@ export class RiskAnalysis implements AfterViewInit {
 
     this.api.predictRisk(this.formData).subscribe({
 
-      next: (res: any) => {
+      next: (res) => {
         this.result = res;
         this.loading = false;
       },
 
       error: (err) => {
-        console.error("Prediction error:", err);
-        alert("Failed to predict risk. Please try again.");
+        console.error('Prediction error:', err);
+        alert("Prediction failed. Please try again.");
         this.loading = false;
       }
 
     });
   }
 
-  getRegionName() {
+  // ================================
+  // GO TO RECOMMENDATION PAGE
+  // ================================
+  goToRecommendation() {
+
+  if (!this.result) {
+    alert("Run risk analysis first");
+    return;
+  }
+
+  this.router.navigate(['/recommendations'], {
+    state: {
+      risk: this.result?.risk_level,
+      age: this.formData.age,
+      gender: this.formData.gender,
+      region: this.getRegionName()
+    }
+  });
+
+}
+
+  // ================================
+  // REGION NAME
+  // ================================
+  getRegionName(): string {
     const region = this.regions.find(r => r.value === this.formData.region);
     return region ? region.name : 'Unknown';
   }
 
+  // ================================
+  // NETWORK BACKGROUND
+  // ================================
   ngAfterViewInit() {
 
     const canvas = document.getElementById('networkCanvas') as HTMLCanvasElement;
-
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    if (!ctx) return; // Added safety check for context
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    resizeCanvas();
 
-    const nodes: any[] = [];
+    this.resizeHandler = resizeCanvas;
+    window.addEventListener('resize', resizeCanvas);
+
+    const nodes: NodePoint[] = [];
 
     for (let i = 0; i < 50; i++) {
       nodes.push({
@@ -101,7 +167,7 @@ export class RiskAnalysis implements AfterViewInit {
 
         ctx.beginPath();
         ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "#38bdf8";
+        ctx.fillStyle = '#38bdf8';
         ctx.fill();
 
       });
@@ -111,26 +177,31 @@ export class RiskAnalysis implements AfterViewInit {
 
           const dx = nodes[i].x - nodes[j].x;
           const dy = nodes[i].y - nodes[j].y;
-
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < 120) {
-
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-
-            ctx.strokeStyle = "rgba(56,189,248,0.15)";
+            ctx.strokeStyle = 'rgba(56,189,248,0.15)';
             ctx.stroke();
-
           }
         }
       }
 
       requestAnimationFrame(animate);
-    }
+    };
 
     animate();
+  }
+
+  // ================================
+  // CLEANUP
+  // ================================
+  ngOnDestroy() {
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
   }
 
 }

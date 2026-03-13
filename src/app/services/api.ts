@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 /* =================================
    📈 MULTI-DISEASE TREND MODEL
@@ -24,8 +25,10 @@ export interface SummaryResponse {
    🧠 RISK RESPONSE MODEL
 ================================= */
 export interface RiskResponse {
+  risk_level: 'LOW' | 'MODERATE' | 'HIGH';   // ✅ Added
   high_risk: boolean;
   risk_probability: number;
+  explanation?: string[];
 }
 
 @Injectable({
@@ -36,7 +39,7 @@ export class ApiService {
   /* =================================
      🌐 BACKEND URL
   ================================= */
-  private readonly baseUrl = 'https://doctoanalyai.onrender.com';
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -46,7 +49,7 @@ export class ApiService {
   getSummary(
     age?: number,
     gender?: number,
-    region?: number | string,
+    region?: number,
     disease?: string
   ): Observable<SummaryResponse> {
 

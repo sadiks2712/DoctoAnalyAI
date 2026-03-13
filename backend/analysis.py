@@ -88,15 +88,42 @@ def get_summary(age=None, gender=None, region=None, disease=None):
     print("Detected Columns:", age_col, gender_col, region_col, disease_col)
 
     # =================================================
-    # CLEAN DATA
+    # CLEAN AGE
     # =================================================
     if age_col:
         df[age_col] = pd.to_numeric(df[age_col], errors="coerce")
 
+    # =================================================
+    # CLEAN GENDER (Male/Female support)
+    # =================================================
     if gender_col:
+
+        df[gender_col] = df[gender_col].astype(str).str.lower()
+
+        df[gender_col] = df[gender_col].replace({
+            "male": 1,
+            "m": 1,
+            "female": 0,
+            "f": 0
+        })
+
         df[gender_col] = pd.to_numeric(df[gender_col], errors="coerce")
 
+    # =================================================
+    # CLEAN REGION (Name → Number)
+    # =================================================
     if region_col:
+
+        df[region_col] = df[region_col].astype(str).str.lower()
+
+        df[region_col] = df[region_col].replace({
+            "north": 0,
+            "south": 1,
+            "west": 2,
+            "east": 3,
+            "central": 4
+        })
+
         df[region_col] = pd.to_numeric(df[region_col], errors="coerce")
 
     df = df.dropna()
@@ -121,7 +148,6 @@ def get_summary(age=None, gender=None, region=None, disease=None):
     # =================================================
     avg_age = df[age_col].mean() if age_col else 0
 
-
     # =================================================
     # DISEASE DISTRIBUTION
     # =================================================
@@ -136,9 +162,8 @@ def get_summary(age=None, gender=None, region=None, disease=None):
             .to_dict()
         )
 
-
     # =================================================
-    # REGION DISTRIBUTION (FIXED)
+    # REGION DISTRIBUTION
     # =================================================
     region_distribution = {}
 
@@ -157,7 +182,6 @@ def get_summary(age=None, gender=None, region=None, disease=None):
         for key, val in region_counts.items():
             name = region_map.get(int(key), str(key))
             region_distribution[name] = int(val)
-
 
     # =================================================
     # HIGH RISK CALCULATION
@@ -203,7 +227,6 @@ def get_summary(age=None, gender=None, region=None, disease=None):
 
             if score >= 4:
                 high_risk_count += 1
-
 
     print("HIGH RISK COUNT:", high_risk_count)
 

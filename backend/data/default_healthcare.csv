@@ -1,11 +1,7 @@
-age,gender,region,disease,month
-34,1,0,Flu,Jan
-52,0,1,COVID,Jan
-28,1,2,Flu,Feb
-67,1,3,COVID,Mar
-45,0,4,Asthma,Apr
-73,1,2,Heart,May
-60,1,3,Diabetes,Jun
-41,0,0,Flu,Jul
-55,1,1,COVID,Aug
-66,1,2,Heart,Sep
+Age,Gender,Region,Disease,Date
+65,Male,West,Heart Disease,2024-01-01
+72,Female,East,Stroke,2024-01-02
+50,Female,North,Flu,2024-01-03
+60,Male,West,COVID,2024-01-04
+55,Female,South,Diabetes,2024-01-05
+45,Male,Central,Asthma,2024-01-06
