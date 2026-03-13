@@ -12,11 +12,13 @@ import { UploadComponent } from './upload/upload';
 
 export const routes: Routes = [
 
-  // Public pages
+  /* PUBLIC ROUTES */
+
   { path: '', component: LandingComponent },
   { path: 'login', component: LoginComponent },
 
-  // Protected app pages
+  /* PROTECTED APP ROUTES */
+
   {
     path: 'app',
     component: MainLayoutComponent,
@@ -25,8 +27,8 @@ export const routes: Routes = [
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
-      { path: 'upload', component: UploadComponent },
       { path: 'dashboard', component: Dashboard },
+      { path: 'upload', component: UploadComponent },
       { path: 'risk', component: RiskAnalysis },
       { path: 'trends', component: Trends },
       { path: 'recommendations', component: Recommendations }
@@ -34,7 +36,8 @@ export const routes: Routes = [
     ]
   },
 
-  // Fallback
+  /* FALLBACK ROUTE */
+
   { path: '**', redirectTo: '' }
 
 ];
