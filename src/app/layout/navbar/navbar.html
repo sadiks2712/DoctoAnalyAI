@@ -2,36 +2,39 @@
 
   <div class="logo">🏥 DoctoAnalyAI</div>
 
-  <ul class="nav-links">
+  <!-- Mobile toggle -->
+  <div class="menu-toggle" (click)="toggleMenu()">
+    ☰
+  </div>
+
+  <ul class="nav-links" [class.open]="menuOpen">
 
     <li>
-      <a routerLink="/" routerLinkActive="active">Home</a>
+      <a routerLink="/" routerLinkActive="active" (click)="closeMenu()">Home</a>
     </li>
 
     <li>
-      <a routerLink="/app/upload" routerLinkActive="active">Upload</a>
+      <a routerLink="/upload" routerLinkActive="active" (click)="closeMenu()">Upload</a>
     </li>
 
     <li>
-      <a routerLink="/app/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
     </li>
 
     <li>
-      <a routerLink="/app/risk" routerLinkActive="active">Risk</a>
+      <a routerLink="/risk" routerLinkActive="active" (click)="closeMenu()">Risk</a>
     </li>
 
     <li>
-      <a routerLink="/app/recommendations" routerLinkActive="active">
-        Recommendations
-      </a>
+      <a routerLink="/trends" routerLinkActive="active" (click)="closeMenu()">Trends</a>
     </li>
 
     <li>
-      <a routerLink="/app/trends" routerLinkActive="active">Trends</a>
+      <a routerLink="/recommendations" routerLinkActive="active" (click)="closeMenu()">Recommendations</a>
     </li>
 
   </ul>
 
-  <button class="logout-btn" (click)="logout()">Logout</button>
+  <button class="logout-btn">Logout</button>
 
 </nav>
