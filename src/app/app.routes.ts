@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+
 import { LoginComponent } from './auth/login/login';
 import { Dashboard } from './dashboard/dashboard';
 import { RiskAnalysis } from './risk-analysis/risk-analysis';
@@ -11,26 +12,23 @@ import { UploadComponent } from './upload/upload';
 
 export const routes: Routes = [
 
-  // Landing page
+  // Public pages
   { path: '', component: LandingComponent },
-
-  // Login page
   { path: 'login', component: LoginComponent },
 
-  // Protected app layout
+  // Protected app pages
   {
-    path: '',
+    path: 'app',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
 
-      { path: 'landing', component: LandingComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
       { path: 'upload', component: UploadComponent },
       { path: 'dashboard', component: Dashboard },
       { path: 'risk', component: RiskAnalysis },
       { path: 'trends', component: Trends },
-
-      // ✅ Recommendation page
       { path: 'recommendations', component: Recommendations }
 
     ]

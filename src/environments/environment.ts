@@ -1,6 +1,6 @@
 export const environment = {
 
-  apiUrl: 'http://127.0.0.1:8000',
+  apiUrl: 'https://doctoanalyai.onrender.com',
 
   firebase: {
     apiKey: "AIzaSyD6GDnK0TLICXY_ZrIGH88yCDiwZ1HyDYI",
