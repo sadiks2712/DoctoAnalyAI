@@ -11,7 +11,7 @@
 
   background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(10px);
-  color: rgb(255, 255, 255);
+  color: white;
 }
 
 /* ===== Logo ===== */
@@ -20,27 +20,41 @@
   font-weight: 700;
 }
 
-/* ===== Nav Links ===== */
+/* ===== Nav Links Container ===== */
 .nav-links {
-  list-style: none;
   display: flex;
+  list-style: none;
   gap: 24px;
-  color: white;
-  transition: all 0.3s ease;
+  align-items: center;
 }
 
+/* ===== Nav Items ===== */
 .nav-links li {
-  cursor: pointer;
-  font-weight: 500;
   position: relative;
 }
 
-/* ===== Active Link Highlight ===== */
-.nav-links li.active {
-  color: #60a5fa;
+/* ===== Links ===== */
+.nav-links li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  padding: 6px 4px;
+  transition: 0.3s;
 }
 
-.nav-links li.active::after {
+/* ===== Hover ===== */
+.nav-links li a:hover {
+  color: #93c5fd;
+}
+
+/* ===== Active Link ===== */
+.nav-links li a.active {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+/* ===== Active underline ===== */
+.nav-links li a.active::after {
   content: '';
   position: absolute;
   left: 0;
@@ -48,11 +62,6 @@
   width: 100%;
   height: 2px;
   background: #60a5fa;
-}
-
-/* ===== Hover ===== */
-.nav-links li:hover {
-  color: #93c5fd;
 }
 
 /* ===== Logout ===== */
@@ -75,6 +84,7 @@
 
 /* ===== Mobile Responsive ===== */
 @media (max-width: 768px) {
+
   .menu-toggle {
     display: block;
   }
@@ -84,11 +94,14 @@
     top: 60px;
     right: 0;
     background: #1e293b;
+
     flex-direction: column;
     width: 220px;
     padding: 20px;
     gap: 16px;
+
     transform: translateX(100%);
+    transition: transform 0.3s ease;
   }
 
   .nav-links.open {
@@ -98,4 +111,5 @@
   .logout-btn {
     display: none;
   }
+
 }
