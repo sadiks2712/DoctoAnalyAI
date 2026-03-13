@@ -19,46 +19,32 @@ export class Navbar {
     private router: Router
   ) {}
 
-  /* ===== MOBILE MENU ===== */
-
-  toggleMenu() {
+  toggleMenu(){
     this.menuOpen = !this.menuOpen;
   }
 
-  closeMenu() {
+  closeMenu(){
     this.menuOpen = false;
   }
 
-  /* ===== NAVBAR SCROLL EFFECT ===== */
-
   @HostListener('window:scroll')
-  onScroll() {
+  onScroll(){
     this.scrolled = window.scrollY > 50;
   }
 
-  /* ===== CLOSE MENU ON DESKTOP ===== */
-
-  @HostListener('window:resize')
-  onResize() {
-    if (window.innerWidth > 768) {
-      this.menuOpen = false;
-    }
-  }
-
-  /* ===== LOGOUT ===== */
-
-  async logout() {
-    try {
+  async logout(){
+    try{
 
       await this.auth.logout();
-      console.log('User logged out successfully');
 
-      this.router.navigate(['/login']);
+      console.log('User logged out');
 
-    } catch (error) {
+      this.closeMenu();
 
-      console.error('Logout failed:', error);
+      await this.router.navigate(['/login']);
 
+    }catch(error){
+      console.error(error);
     }
   }
 

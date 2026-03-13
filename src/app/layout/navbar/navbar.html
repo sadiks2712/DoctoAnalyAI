@@ -14,27 +14,29 @@
     </li>
 
     <li>
-      <a routerLink="/upload" routerLinkActive="active" (click)="closeMenu()">Upload</a>
+      <a routerLink="/app/upload" routerLinkActive="active" (click)="closeMenu()">Upload</a>
     </li>
 
     <li>
-      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+      <a routerLink="/app/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
     </li>
 
     <li>
-      <a routerLink="/risk" routerLinkActive="active" (click)="closeMenu()">Risk</a>
+      <a routerLink="/app/risk" routerLinkActive="active" (click)="closeMenu()">Risk</a>
     </li>
 
     <li>
-      <a routerLink="/trends" routerLinkActive="active" (click)="closeMenu()">Trends</a>
+      <a routerLink="/app/trends" routerLinkActive="active" (click)="closeMenu()">Trends</a>
     </li>
 
     <li>
-      <a routerLink="/recommendations" routerLinkActive="active" (click)="closeMenu()">Recommendations</a>
+      <a routerLink="/app/recommendations" routerLinkActive="active" (click)="closeMenu()">Recommendations</a>
     </li>
 
   </ul>
 
-  <button class="logout-btn">Logout</button>
+  <button class="logout-btn" (click)="logout(); closeMenu()">
+    Logout
+  </button>
 
 </nav>

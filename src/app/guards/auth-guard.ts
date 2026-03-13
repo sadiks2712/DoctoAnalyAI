@@ -18,12 +18,10 @@ export const authGuard: CanActivateFn = () => {
 
       } else {
 
-        alert('Please login first to access this page');
-
+        alert('Please login first');
         router.navigate(['/login']);
 
         observer.next(false);
-
       }
 
       observer.complete();
