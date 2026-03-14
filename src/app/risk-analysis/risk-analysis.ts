@@ -31,18 +31,20 @@ interface NodePoint {
 })
 export class RiskAnalysis implements AfterViewInit, OnDestroy {
 
-  // ================================
-  // FORM DATA
-  // ================================
+  /* ================================
+     FORM DATA
+  ================================ */
+
   formData: RiskForm = {
     age: 50,
     gender: 1,
     region: 0
   };
 
-  // ================================
-  // REGIONS
-  // ================================
+  /* ================================
+     REGION LIST
+  ================================ */
+
   regions: Region[] = [
     { name: 'North India', value: 0 },
     { name: 'South India', value: 1 },
@@ -56,11 +58,15 @@ export class RiskAnalysis implements AfterViewInit, OnDestroy {
 
   private resizeHandler?: () => void;
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(
+    private api: ApiService,
+    private router: Router
+  ) {}
 
-  // ================================
-  // PREDICT RISK
-  // ================================
+  /* ================================
+     PREDICT RISK
+  ================================ */
+
   predict() {
 
     if (!this.formData.age || this.formData.age < 1) {
@@ -90,40 +96,44 @@ export class RiskAnalysis implements AfterViewInit, OnDestroy {
       }
 
     });
+
   }
 
-  // ================================
-  // GO TO RECOMMENDATION PAGE
-  // ================================
+  /* ================================
+     GO TO RECOMMENDATION PAGE
+  ================================ */
+
   goToRecommendation() {
 
-  if (!this.result) {
-    alert("Run risk analysis first");
-    return;
+    if (!this.result) {
+      alert("Run risk analysis first");
+      return;
+    }
+
+    this.router.navigate(['/app/recommendations'], {
+      state: {
+        risk: this.result.risk_level,
+        age: this.formData.age,
+        gender: this.formData.gender,
+        region: this.getRegionName()
+      }
+    });
+
   }
 
-  this.router.navigate(['/recommendations'], {
-    state: {
-      risk: this.result?.risk_level,
-      age: this.formData.age,
-      gender: this.formData.gender,
-      region: this.getRegionName()
-    }
-  });
+  /* ================================
+     GET REGION NAME
+  ================================ */
 
-}
-
-  // ================================
-  // REGION NAME
-  // ================================
   getRegionName(): string {
     const region = this.regions.find(r => r.value === this.formData.region);
     return region ? region.name : 'Unknown';
   }
 
-  // ================================
-  // NETWORK BACKGROUND
-  // ================================
+  /* ================================
+     NETWORK BACKGROUND ANIMATION
+  ================================ */
+
   ngAfterViewInit() {
 
     const canvas = document.getElementById('networkCanvas') as HTMLCanvasElement;
@@ -186,18 +196,21 @@ export class RiskAnalysis implements AfterViewInit, OnDestroy {
             ctx.strokeStyle = 'rgba(56,189,248,0.15)';
             ctx.stroke();
           }
+
         }
       }
 
       requestAnimationFrame(animate);
+
     };
 
     animate();
   }
 
-  // ================================
-  // CLEANUP
-  // ================================
+  /* ================================
+     CLEANUP
+  ================================ */
+
   ngOnDestroy() {
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);

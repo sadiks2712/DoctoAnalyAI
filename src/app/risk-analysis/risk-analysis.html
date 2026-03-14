@@ -11,41 +11,47 @@
   <h2 class="title">🧠 AI Health Risk Predictor</h2>
 
   <div class="form-card">
-
+<div class="form-group">
     <!-- AGE -->
-    <label for="age">Age</label>
-    <input
-      id="age"
-      name="age"
-      type="number"
-      [(ngModel)]="formData.age"
-      min="1"
-      max="120"
-    >
+    <div class="form-group">
+      <label for="age">Age</label>
+      <input
+        id="age"
+        name="age"
+        type="number"
+        [(ngModel)]="formData.age"
+        min="1"
+        max="120"
+      >
+    </div>
 
     <!-- GENDER -->
-    <label for="gender">Gender</label>
-    <select
-      id="gender"
-      name="gender"
-      [(ngModel)]="formData.gender"
-    >
-      <option [ngValue]="1">Male</option>
-      <option [ngValue]="0">Female</option>
-    </select>
+    <div class="form-group">
+      <label for="gender">Gender</label>
+      <select
+        id="gender"
+        name="gender"
+        [(ngModel)]="formData.gender"
+      >
+        <option [ngValue]="1">Male</option>
+        <option [ngValue]="0">Female</option>
+      </select>
+    </div>
 
     <!-- REGION -->
-    <label for="region">Region</label>
-    <select
-      id="region"
-      name="region"
-      [(ngModel)]="formData.region"
-    >
-      <option *ngFor="let region of regions" [ngValue]="region.value">
-        {{ region.name }}
-      </option>
-    </select>
-
+    <div class="form-group">
+      <label for="region">Region</label>
+      <select
+        id="region"
+        name="region"
+        [(ngModel)]="formData.region"
+      >
+        <option *ngFor="let region of regions" [ngValue]="region.value">
+          {{ region.name }}
+        </option>
+      </select>
+    </div>
+</div>
     <!-- BUTTON -->
     <button
       type="button"
@@ -61,7 +67,6 @@
 
   </div>
 
-
   <!-- AI LOADING -->
   <div *ngIf="loading" class="dna-loader">
 
@@ -73,7 +78,6 @@
     <p>Analyzing patient health patterns...</p>
 
   </div>
-
 
   <!-- RESULT -->
   <div *ngIf="result">
@@ -88,14 +92,11 @@
 
     </div>
 
-
     <div class="result-card">
 
       <h3>Prediction Result</h3>
 
-      <!-- RISK LEVEL -->
       <p class="risk-text">
-
         Risk Level:
 
         <span
@@ -103,44 +104,32 @@
           [class.moderate]="result.risk_level === 'MODERATE'"
           [class.low]="result.risk_level === 'LOW'"
         >
-
           {{ result.risk_level === 'HIGH' ? 'HIGH RISK ⚠️' :
              result.risk_level === 'MODERATE' ? 'MODERATE RISK ⚡' :
              'LOW RISK ✅' }}
-
         </span>
-
       </p>
-
 
       <!-- RISK METER -->
       <div class="risk-meter">
-
         <div
           class="meter-circle"
           [style.--risk]="result.risk_probability * 100"
         >
-
           <div class="meter-value">
             {{ result.risk_probability * 100 | number:'1.0-0' }}%
           </div>
-
         </div>
-
       </div>
-
 
       <p>Risk Probability</p>
 
       <div class="progress-bar">
-
         <div
           class="progress-fill"
           [style.width.%]="result.risk_probability * 100"
         ></div>
-
       </div>
-
 
       <!-- AI EXPLANATION -->
       <div class="ai-explanation" *ngIf="result.explanation?.length">
@@ -154,15 +143,16 @@
         </ul>
 
       </div>
-      <div class="risk-result" *ngIf="result">
 
-  <h2>Risk Level: {{result.risk_level}}</h2>
+      <div class="risk-result">
 
-  <button (click)="goToRecommendation()">
-    See Recommendations
-  </button>
+        <h2>Risk Level: {{result.risk_level}}</h2>
 
-</div>
+        <button (click)="goToRecommendation()">
+          See Recommendations
+        </button>
+
+      </div>
 
     </div>
 

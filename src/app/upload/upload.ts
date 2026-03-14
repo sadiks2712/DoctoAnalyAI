@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api';
 
@@ -11,7 +10,8 @@ import { ApiService } from '../services/api';
   styleUrls: ['./upload.css']
 })
 export class UploadComponent {
-showSuccess = false;
+
+  showSuccess = false;
   selectedFile: File | null = null;
   message = '';
   loading = false;
@@ -21,7 +21,7 @@ showSuccess = false;
     private router: Router
   ) {}
 
-  // ✅ strongly typed event
+  // File selection
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
 
@@ -31,45 +31,54 @@ showSuccess = false;
     }
   }
 
-  // ✅ professional upload flow
- upload() {
-  if (!this.selectedFile) {
-    this.message = '⚠️ Please select a CSV file first';
-    return;
-  }
+  // Upload dataset
+  upload() {
 
-  // ✅ file type validation
-  if (!this.selectedFile.name.toLowerCase().endsWith('.csv')) {
-    this.message = '⚠️ Only CSV files are allowed';
-    return;
-  }
-
-  this.loading = true;
-  this.showSuccess = false;
-  this.message = 'Uploading dataset...';
-
-  this.api.uploadDataset(this.selectedFile).subscribe({
-    next: (res: any) => {
-      console.log('Upload response:', res); // ⭐ IMPORTANT DEBUG
-
-      this.loading = false;
-      this.showSuccess = true;
-      this.message = '✅ Dataset uploaded successfully';
-
-      // notify dashboard
-      window.dispatchEvent(new Event('dataUpdated'));
-
-      // redirect after animation
-      setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 1600);
-    },
-
-    error: (err) => {
-      console.error('Upload error:', err);
-      this.loading = false;
-      this.showSuccess = false;
-      this.message = '❌ Upload failed. Please try again.';
+    if (!this.selectedFile) {
+      this.message = '⚠️ Please select a CSV file first';
+      return;
     }
-  });
-}}
+
+    // CSV validation
+    if (!this.selectedFile.name.toLowerCase().endsWith('.csv')) {
+      this.message = '⚠️ Only CSV files are allowed';
+      return;
+    }
+
+    this.loading = true;
+    this.showSuccess = false;
+    this.message = 'Uploading dataset...';
+
+    this.api.uploadDataset(this.selectedFile).subscribe({
+
+      next: (res: any) => {
+
+        console.log('Upload response:', res);
+
+        this.loading = false;
+        this.showSuccess = true;
+        this.message = '✅ Dataset uploaded successfully';
+
+        // notify other components
+        window.dispatchEvent(new Event('dataUpdated'));
+
+        // redirect after animation
+        setTimeout(() => {
+          this.router.navigate(['/app/dashboard']);
+        }, 1600);
+      },
+
+      error: (err) => {
+
+        console.error('Upload error:', err);
+
+        this.loading = false;
+        this.showSuccess = false;
+        this.message = '❌ Upload failed. Please try again.';
+      }
+
+    });
+
+  }
+
+}

@@ -1,0 +1,112 @@
+<div class="page-wrapper">
+
+  <div class="register-card">
+
+```
+<!-- LEFT SIDE IMAGE -->
+<div class="register-image">
+
+  <div class="slider">
+    <img
+      [src]="images[currentIndex]"
+      class="slide-image"
+      alt="Healthcare dashboard preview"
+    >
+
+    <button class="arrow left" (click)="prevSlide()">❮</button>
+    <button class="arrow right" (click)="nextSlide()">❯</button>
+  </div>
+
+  <div class="image-text">
+    <h3>
+      Smart Healthcare <br>
+      Analytics & Insights
+    </h3>
+  </div>
+
+</div>
+
+
+<!-- RIGHT SIDE FORM -->
+<div class="register-form">
+
+  <div class="brand">
+    <span class="pulse-dot"></span>
+    Healthcare Analytics
+  </div>
+
+  <h2>Create an account</h2>
+
+  <p class="subtitle">
+    Already have an account?
+    <a routerLink="/login">Log in</a>
+  </p>
+
+  <!-- ERROR -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- NAME -->
+  <div class="input-row">
+    <input
+      type="text"
+      placeholder="First name"
+      [(ngModel)]="firstName"
+      (input)="clearError()"
+    >
+
+    <input
+      type="text"
+      placeholder="Last name"
+      [(ngModel)]="lastName"
+      (input)="clearError()"
+    >
+  </div>
+
+  <!-- EMAIL -->
+  <div class="input-group">
+    <input
+      type="email"
+      placeholder="Email address"
+      [(ngModel)]="email"
+      (input)="clearError()"
+    >
+  </div>
+
+  <!-- PASSWORD -->
+  <div class="input-group">
+    <input
+      type="password"
+      placeholder="Enter your password"
+      [(ngModel)]="password"
+      (input)="clearError()"
+    >
+  </div>
+
+  <!-- TERMS -->
+  <div class="terms">
+    <input type="checkbox" id="terms">
+    <label for="terms">
+      I agree to the <span>Terms & Conditions</span>
+    </label>
+  </div>
+
+  <!-- BUTTON -->
+  <button
+    class="primary-btn"
+    (click)="register()"
+    [disabled]="loading"
+  >
+
+    <span *ngIf="loading" class="spinner"></span>
+    <span *ngIf="!loading">Create account</span>
+
+  </button>
+
+</div>
+```
+
+  </div>
+
+</div>

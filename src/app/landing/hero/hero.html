@@ -10,32 +10,43 @@
     <span></span>
   </div>
 
-  <div class="hero-content fade-up">
-    <h1 class="hero-title">
-      Healthcare Disease Trend & Risk Analysis
-    </h1>
+  <div class="hero-container">
 
-    <p class="hero-subtitle">
-      AI-powered platform to analyze disease trends,
-      predict high-risk patients, and support healthcare decisions.
-    </p>
+    <!-- LEFT CONTENT -->
+    <div class="hero-content fade-up">
+      <h1 class="hero-title">
+        Healthcare Disease Trend & Risk Analysis
+      </h1>
 
-   <div class="hero-actions">
+      <p class="hero-subtitle">
+        AI-powered platform to analyze disease trends,
+        predict high-risk patients, and support healthcare decisions.
+      </p>
 
-  <button routerLink="/app/upload" class="primary-btn">
-    📊 Analyse Data
-  </button>
+      <div class="hero-actions">
 
-  <button routerLink="/app/risk" class="secondary-btn">
-    🧠 Predict Risk
-  </button>
+        <button routerLink="/app/upload" class="primary-btn">
+          📊 Analyse Data
+        </button>
 
-  <button class="learn-btn" (click)="scrollToFeatures()">
-    🔍 Learn More
-  </button>
+        <button routerLink="/app/risk" class="secondary-btn">
+          🧠 Predict Risk
+        </button>
 
-</div>
+        <button class="learn-btn" (click)="scrollToFeatures()">
+          🔍 Learn More
+        </button>
+
+      </div>
+    </div>
+
+    <!-- RIGHT IMAGE -->
+    <div class="hero-image fade-up">
+      <img src="assets/logo.png" alt="DoctoAnalyAI Logo">
+    </div>
+
   </div>
+
 </section>
 
 

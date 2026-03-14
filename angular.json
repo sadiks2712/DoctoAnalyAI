@@ -10,34 +10,49 @@
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
+
         "build": {
           "allowedCommonJsDependencies": [
-  "html2canvas"
-],
+            "html2canvas"
+          ],
           "builder": "@angular/build:application",
+
           "options": {
             "browser": "src/main.ts",
+
             "polyfills": [
               "zone.js"
             ],
+
             "tsConfig": "tsconfig.app.json",
+
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
-              }
+                "input": "public",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              },
+              "src/favicon.ico"
             ],
+
             "styles": [
               "src/styles.css"
             ]
           },
+
           "configurations": {
+
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-    "maximumWarning": "2mb",
-    "maximumError": "3mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -47,53 +62,76 @@
               ],
               "outputHashing": "all"
             },
+
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             }
+
           },
+
           "defaultConfiguration": "production"
         },
+
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
+
             "production": {
               "buildTarget": "healthcare-app:build:production"
             },
+
             "development": {
               "buildTarget": "healthcare-app:build:development"
             }
+
           },
           "defaultConfiguration": "development"
         },
+
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
+
         "test": {
           "builder": "@angular/build:karma",
+
           "options": {
+
             "polyfills": [
               "zone.js",
               "zone.js/testing"
             ],
+
             "tsConfig": "tsconfig.spec.json",
+
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public",
                 "output": "/"
-              }
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              },
+              "src/favicon.ico"
             ],
+
             "styles": [
               "src/styles.css"
             ]
+
           }
         }
+
       }
     }
   },
+
   "cli": {
-    "analytics": "6be5f32d-6451-4f19-8af6-21fadb818f07"
+    "analytics": false
   }
 }

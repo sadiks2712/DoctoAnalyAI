@@ -6,11 +6,11 @@ GLOBAL
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family: 'Segoe UI', sans-serif;
+font-family:'Segoe UI', sans-serif;
 }
 
 body{
-background: linear-gradient(120deg,#eef4ff,#f7fbff,#edf9ff);
+background:linear-gradient(120deg,#eef4ff,#f7fbff,#edf9ff);
 color:#1e293b;
 overflow-x:hidden;
 }
@@ -21,13 +21,70 @@ HERO SECTION
 
 .hero{
 position:relative;
-min-height:90vh;
+padding:120px 10%;
+overflow:hidden;
+}
+
+/* HERO LAYOUT */
+
+.hero-container{
 display:flex;
 align-items:center;
+justify-content:space-between;
+gap:80px;
+flex-wrap:wrap;
+position:relative;
+z-index:2;
+}
+
+/* HERO TEXT */
+
+.hero-content{
+flex:1;
+max-width:550px;
+}
+
+.hero-title{
+font-size:42px;
+font-weight:700;
+color:#1e3a8a;
+margin-bottom:20px;
+}
+
+.hero-subtitle{
+font-size:18px;
+color:#475569;
+margin-bottom:40px;
+line-height:1.6;
+}
+
+/* HERO IMAGE */
+
+.hero-image{
+flex:1;
+display:flex;
 justify-content:center;
-text-align:center;
-padding:80px 20px;
-overflow:hidden;
+align-items:center;
+min-width:300px;
+}
+
+.hero-image img{
+width:380px;
+max-width:100%;
+height:auto;
+animation:floatLogo 6s ease-in-out infinite;
+}
+
+/* FLOAT LOGO */
+
+@keyframes floatLogo{
+
+0%{transform:translateY(0);}
+
+50%{transform:translateY(-15px);}
+
+100%{transform:translateY(0);}
+
 }
 
 /* ===============================
@@ -42,6 +99,7 @@ top:0;
 left:0;
 overflow:hidden;
 z-index:0;
+pointer-events:none;
 }
 
 .hero-bg span{
@@ -86,41 +144,12 @@ animation-duration:19s;
 
 @keyframes float{
 
-0%{
-transform:translateY(0) scale(1);
-}
+0%{transform:translateY(0) scale(1);}
 
-50%{
-transform:translateY(-120px) scale(1.2);
-}
+50%{transform:translateY(-120px) scale(1.2);}
 
-100%{
-transform:translateY(0) scale(1);
-}
+100%{transform:translateY(0) scale(1);}
 
-}
-
-/* ===============================
-HERO CONTENT
-=============================== */
-
-.hero-content{
-max-width:800px;
-z-index:2;
-}
-
-.hero-title{
-font-size:42px;
-font-weight:700;
-color:#1e3a8a;
-margin-bottom:20px;
-}
-
-.hero-subtitle{
-font-size:18px;
-color:#475569;
-margin-bottom:40px;
-line-height:1.6;
 }
 
 /* ===============================
@@ -130,9 +159,11 @@ BUTTONS
 .hero-actions{
 display:flex;
 gap:15px;
-justify-content:center;
 flex-wrap:wrap;
+align-items:center;
 }
+
+/* PRIMARY */
 
 .primary-btn{
 background:#2563eb;
@@ -150,6 +181,8 @@ transform:translateY(-4px);
 box-shadow:0 10px 25px rgba(37,99,235,.35);
 }
 
+/* SECONDARY */
+
 .secondary-btn{
 background:white;
 color:#2563eb;
@@ -166,6 +199,8 @@ background:#2563eb;
 color:white;
 transform:translateY(-4px);
 }
+
+/* LEARN BUTTON */
 
 .learn-btn{
 background:#10b981;
@@ -186,12 +221,11 @@ box-shadow:0 10px 25px rgba(16,185,129,.35);
 /* ===============================
 STATS
 =============================== */
+
 .stats{
 padding:70px 10%;
 background:linear-gradient(120deg,#f8fbff,#eef4ff);
 }
-
-/* horizontal layout */
 
 .stats-grid{
 display:flex;
@@ -200,8 +234,6 @@ align-items:center;
 gap:25px;
 flex-wrap:wrap;
 }
-
-/* stat card */
 
 .stat-card{
 flex:1;
@@ -215,8 +247,6 @@ overflow:hidden;
 box-shadow:0 10px 25px rgba(0,0,0,.05);
 transition:all .35s ease;
 }
-
-/* animated top line */
 
 .stat-card::before{
 content:"";
@@ -235,14 +265,10 @@ transition:.4s;
 transform:scaleX(1);
 }
 
-/* hover animation */
-
 .stat-card:hover{
 transform:translateY(-10px) scale(1.03);
 box-shadow:0 20px 45px rgba(0,0,0,.12);
 }
-
-/* stat number */
 
 .stat-number{
 font-size:36px;
@@ -252,8 +278,6 @@ background:linear-gradient(90deg,#2563eb,#10b981);
 -webkit-text-fill-color:transparent;
 animation:numberPulse 2s infinite alternate;
 }
-
-/* pulse animation */
 
 @keyframes numberPulse{
 
@@ -269,14 +293,13 @@ text-shadow:0 0 10px rgba(37,99,235,.3);
 
 }
 
-/* label */
-
 .stat-label{
 margin-top:10px;
 font-size:14px;
 color:#64748b;
 letter-spacing:.5px;
 }
+
 /* ===============================
 FEATURES
 =============================== */
@@ -430,6 +453,12 @@ RESPONSIVE
 
 @media(max-width:768px){
 
+.hero-container{
+flex-direction:column;
+text-align:center;
+gap:40px;
+}
+
 .hero-title{
 font-size:32px;
 }
@@ -438,8 +467,21 @@ font-size:32px;
 font-size:16px;
 }
 
+.hero-image img{
+width:220px;
+margin-top:20px;
+}
+
+.hero-actions{
+justify-content:center;
+}
+
 .section-title{
 font-size:26px;
+}
+
+.stats-grid{
+flex-direction:column;
 }
 
 }
